@@ -16,6 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import dev.kajor.bmd.goal.GoalState;
+import dev.kajor.bmd.goal.GoalTracker;
 import dev.kajor.bmd.net.BmdPayloads;
 
 import java.util.HashMap;
@@ -36,9 +38,12 @@ public class BmdMod implements ModInitializer {
     public void onInitialize() {
         PayloadTypeRegistry.clientboundPlay().register(BmdPayloads.Roster.TYPE, BmdPayloads.Roster.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(BmdPayloads.Signal.TYPE, BmdPayloads.Signal.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(BmdPayloads.GoalInfo.TYPE, BmdPayloads.GoalInfo.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(BmdPayloads.SignalRequest.TYPE, BmdPayloads.SignalRequest.CODEC);
 
         ServerLifecycleEvents.SERVER_STARTED.register(BmdState::load);
+        ServerLifecycleEvents.SERVER_STARTED.register(GoalState::load);
+        GoalTracker.register();
         CommandRegistrationCallback.EVENT.register((dispatcher, access, env) -> BmdCommand.register(dispatcher));
         Debuffs.register();
         ModCheck.register();
@@ -75,7 +80,7 @@ public class BmdMod implements ModInitializer {
             // tabliczka z przedmiotem - przywilej niemego
             if (!BmdConfig.get().muteItemSign || BmdState.get(player) != Sense.MUTE) {
                 // Ciche odrzucenie wygladalo jak zepsuty mod - powiedz, o co chodzi.
-                player.sendSystemMessage(Component.literal("✕ Tabliczke z przedmiotem pokazuje tylko niemy.")
+                player.sendSystemMessage(Component.literal("✕ ").append(Component.translatable("bmd.sign.mute_only"))
                         .withStyle(ChatFormatting.RED), true);
                 return;
             }

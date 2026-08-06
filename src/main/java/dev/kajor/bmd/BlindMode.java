@@ -1,20 +1,23 @@
 package dev.kajor.bmd;
 
+import net.minecraft.network.chat.Component;
+
 /** Jak mocno slepy jest slepy. */
 public enum BlindMode {
     /** Wanilkowe Blindness + Darkness - widac zarys tuz przy twarzy, da sie grac. */
-    EASY("latwy", "Blindness + Darkness, widzisz tuz przed soba"),
+    EASY(),
     /** Pelna czern plus echolokacja dzwiekow. */
-    NORMAL("normalny", "czern + echolokacja dzwiekow"),
+    NORMAL(),
     /** Pelna czern, zero podpowiedzi. */
-    HARD("trudny", "czern absolutna, sam dzwiek z gry");
+    HARD();
 
-    public final String pl;
-    public final String opis;
+    /** Klucz tlumaczenia nazwy trybu. */
+    public String key() {
+        return "bmd.mode." + name().toLowerCase();
+    }
 
-    BlindMode(String pl, String opis) {
-        this.pl = pl;
-        this.opis = opis;
+    public Component displayName() {
+        return Component.translatable(key());
     }
 
     public static BlindMode byName(String s) {

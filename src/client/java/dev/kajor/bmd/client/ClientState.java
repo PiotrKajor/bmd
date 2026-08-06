@@ -21,6 +21,12 @@ public final class ClientState {
     public static double easyDarkness = 0.6D;
     public static final Map<UUID, Sense> ROSTER = new HashMap<>();
 
+    /** Aktywne wyzwanie - null, gdy zadnego nie ma. */
+    public static String goalId = null;
+    public static long goalStartedAt = 0L;
+    /** > 0 oznacza cel ukonczony i czas koncowy. */
+    public static long goalFinishedMs = 0L;
+
     /** Sygnaly wiszace nad glowami: gracz -> co i do kiedy. */
     public static final Map<UUID, Signal> SIGNALS = new HashMap<>();
 

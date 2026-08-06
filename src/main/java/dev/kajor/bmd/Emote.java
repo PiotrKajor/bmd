@@ -19,35 +19,36 @@ import net.minecraft.sounds.SoundEvents;
  */
 public enum Emote {
     // --- podstawy rozmowy ---
-    YES("Tak", "✔", SoundEvents.NOTE_BLOCK_BELL, 1.6F),
-    NO("Nie", "✕", SoundEvents.NOTE_BLOCK_BASS, 0.7F),
-    DUNNO("Nie wiem", "?", SoundEvents.NOTE_BLOCK_SNARE, 1.0F),
-    LAUGH("Ha ha!", "☺", SoundEvents.NOTE_BLOCK_XYLOPHONE, 1.4F),
+    YES("✔", SoundEvents.NOTE_BLOCK_BELL, 1.6F),
+    NO("✕", SoundEvents.NOTE_BLOCK_BASS, 0.7F),
+    DUNNO("?", SoundEvents.NOTE_BLOCK_SNARE, 1.0F),
+    LAUGH("☺", SoundEvents.NOTE_BLOCK_XYLOPHONE, 1.4F),
 
     // --- alarmy ---
-    HELP("Pomocy!", "❤", SoundEvents.NOTE_BLOCK_PLING, 2.0F),
-    DANGER("Uwaga!", "⚠", SoundEvents.NOTE_BLOCK_DIDGERIDOO, 0.6F),
-    ENEMY("Wrog!", "⚔", SoundEvents.NOTE_BLOCK_BASS, 1.9F),
-    DYING("Umieram", "☠", SoundEvents.NOTE_BLOCK_BASS, 0.5F),
+    HELP("❤", SoundEvents.NOTE_BLOCK_PLING, 2.0F),
+    DANGER("⚠", SoundEvents.NOTE_BLOCK_DIDGERIDOO, 0.6F),
+    ENEMY("⚔", SoundEvents.NOTE_BLOCK_BASS, 1.9F),
+    DYING("☠", SoundEvents.NOTE_BLOCK_BASS, 0.5F),
 
     // --- kierowanie druzyna ---
-    FOLLOW("Za mna", "➜", SoundEvents.NOTE_BLOCK_FLUTE, 1.2F),
-    WAIT("Czekaj", "⌛", SoundEvents.NOTE_BLOCK_HAT, 1.0F),
-    HERE("Tutaj", "⚑", SoundEvents.NOTE_BLOCK_BELL, 1.0F),
-    HOME("Do bazy", "⌂", SoundEvents.NOTE_BLOCK_FLUTE, 0.8F),
+    FOLLOW("➜", SoundEvents.NOTE_BLOCK_FLUTE, 1.2F),
+    WAIT("⌛", SoundEvents.NOTE_BLOCK_HAT, 1.0F),
+    HERE("⚑", SoundEvents.NOTE_BLOCK_BELL, 1.0F),
+    HOME("⌂", SoundEvents.NOTE_BLOCK_FLUTE, 0.8F),
 
     // --- towarzyskie ---
-    HELLO("Czesc!", "✋", SoundEvents.NOTE_BLOCK_CHIME, 1.5F),
-    CLAP("Brawo!", "✷", SoundEvents.NOTE_BLOCK_BANJO, 1.3F),
-    RUDE("Spadaj!", "☝", SoundEvents.NOTE_BLOCK_DIDGERIDOO, 1.8F);
+    HELLO("✋", SoundEvents.NOTE_BLOCK_CHIME, 1.5F),
+    CLAP("✷", SoundEvents.NOTE_BLOCK_BANJO, 1.3F),
+    RUDE("☝", SoundEvents.NOTE_BLOCK_DIDGERIDOO, 1.8F);
 
-    public final String pl;
+    /** Klucz tlumaczenia nazwy gestu. */
+    public final String key;
     public final String symbol;
     public final Holder<SoundEvent> sound;
     public final float pitch;
 
-    Emote(String pl, String symbol, Holder<SoundEvent> sound, float pitch) {
-        this.pl = pl;
+    Emote(String symbol, Holder<SoundEvent> sound, float pitch) {
+        this.key = "bmd.emote." + name().toLowerCase();
         this.symbol = symbol;
         this.sound = sound;
         this.pitch = pitch;
@@ -67,6 +68,10 @@ public enum Emote {
     public Component emoji() {
         return Component.literal(String.valueOf((char) (PUA_START + ordinal())))
                 .withStyle(Style.EMPTY.withFont(EMOJI_FONT));
+    }
+
+    public Component displayName() {
+        return Component.translatable(key);
     }
 
     public static Emote byId(int id) {

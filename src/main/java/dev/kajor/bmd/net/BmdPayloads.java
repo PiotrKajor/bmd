@@ -109,6 +109,31 @@ public final class BmdPayloads {
         }
     }
 
+    /**
+     * Stan wyzwania. Czas liczy klient od startedAt, zeby licznik chodzil plynnie
+     * bez pakietu co sekunde; przy zakonczeniu serwer podaje czas koncowy.
+     */
+    public record GoalInfo(String goalId, long startedAt, long finishedMs) implements CustomPacketPayload {
+        public static final Type<GoalInfo> TYPE =
+                new Type<>(Identifier.fromNamespaceAndPath(BmdMod.MOD_ID, "goal"));
+
+        public static final StreamCodec<FriendlyByteBuf, GoalInfo> CODEC = StreamCodec.of(
+                (buf, v) -> {
+                    buf.writeUtf(v.goalId == null ? "" : v.goalId, 64);
+                    buf.writeLong(v.startedAt);
+                    buf.writeLong(v.finishedMs);
+                },
+                buf -> {
+                    String id = buf.readUtf(64);
+                    return new GoalInfo(id.isEmpty() ? null : id, buf.readLong(), buf.readLong());
+                });
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
     private static Sense readSense(FriendlyByteBuf buf) {
         int i = buf.readVarInt();
         Sense[] all = Sense.values();

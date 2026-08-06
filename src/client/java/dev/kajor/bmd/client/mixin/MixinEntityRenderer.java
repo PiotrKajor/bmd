@@ -67,7 +67,8 @@ public class MixinEntityRenderer {
         if (signal.emoteId() >= 0) {
             Emote emote = Emote.byId(signal.emoteId());
             return Component.empty().append(emote.emoji())
-                    .append(Component.literal(" " + emote.pl).withStyle(ChatFormatting.YELLOW));
+                    .append(Component.literal(" "))
+                    .append(emote.displayName().copy().withStyle(ChatFormatting.YELLOW));
         }
 
         Identifier id = signal.itemId();

@@ -27,7 +27,7 @@ public final class Debuffs {
         // Sam ALLOW_DAMAGE nie da graczowi feedbacku - to jest tylko po to, zeby wiedzial dlaczego.
         AttackEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {
             if (BmdConfig.get().muteCannotAttack && sense(player) == Sense.MUTE) {
-                warn(player, "Niemy nie zadaje obrazen.");
+                warn(player, "bmd.warn.mute_no_attack");
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
@@ -35,7 +35,7 @@ public final class Debuffs {
 
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
             if (BmdConfig.get().muteCannotChat && BmdState.get(sender) == Sense.MUTE) {
-                warn(sender, "Niemy nie pisze. Uzyj kola gestow [LCtrl].");
+                warn(sender, "bmd.warn.mute_no_chat");
                 return false;
             }
             return true;
@@ -45,7 +45,7 @@ public final class Debuffs {
         ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register((message, source, params) -> {
             if (!BmdConfig.get().muteCannotChat) return true;
             if (source.getEntity() instanceof ServerPlayer p && BmdState.get(p) == Sense.MUTE) {
-                warn(p, "Niemy nie pisze. Uzyj kola gestow [LCtrl].");
+                warn(p, "bmd.warn.mute_no_chat");
                 return false;
             }
             return true;
@@ -53,7 +53,7 @@ public final class Debuffs {
 
         UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
             if (BmdConfig.get().deafCannotUseItems && sense(player) == Sense.DEAF) {
-                warn(player, "Gluchy nie stawia blokow ani nie uzywa PPM.");
+                warn(player, "bmd.warn.deaf_no_place");
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
@@ -63,7 +63,7 @@ public final class Debuffs {
             if (BmdConfig.get().deafCannotUseItems && sense(player) == Sense.DEAF) {
                 // Glod nie jest czescia kary - blokada PPM nie moze oznaczac smierci glodowej.
                 if (isFood(player.getItemInHand(hand))) return InteractionResult.PASS;
-                warn(player, "Gluchy nie uzywa przedmiotow prawym przyciskiem (jesc mozesz).");
+                warn(player, "bmd.warn.deaf_no_use");
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
@@ -80,9 +80,10 @@ public final class Debuffs {
     }
 
     /** Na pasek nad hotbarem - czat zostaje czysty. */
-    private static void warn(Entity entity, String text) {
+    private static void warn(Entity entity, String key) {
         if (entity instanceof ServerPlayer p) {
-            p.sendSystemMessage(Component.literal("✕ " + text).withStyle(ChatFormatting.RED), true);
+            p.sendSystemMessage(Component.literal("✕ ").append(Component.translatable(key))
+                    .withStyle(ChatFormatting.RED), true);
         }
     }
 
