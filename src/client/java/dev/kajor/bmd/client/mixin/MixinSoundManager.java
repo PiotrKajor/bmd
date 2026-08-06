@@ -6,6 +6,7 @@ import net.minecraft.client.sounds.SoundManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.kajor.bmd.Sense;
 import dev.kajor.bmd.client.ClientState;
@@ -31,6 +32,14 @@ public class MixinSoundManager {
         }
         if (ClientState.mine == Sense.BLIND && !ClientState.hardMode) {
             Echolocation.onSound(sound);
+        }
+    }
+
+    /** Druga droga do glosnika - bez tego opoznione dzwieki przeciekaja gluchemu. */
+    @Inject(method = "playDelayed", at = @At("HEAD"), cancellable = true)
+    private void bmd$filterDelayedSound(SoundInstance sound, int delay, CallbackInfo ci) {
+        if (ClientState.mine == Sense.DEAF) {
+            ci.cancel();
         }
     }
 }
