@@ -40,7 +40,7 @@ _jars = [j for j in _jars if "sources" not in j.name]
 BMD_JAR = _jars[-1] if _jars else Path("build/libs/bmd-NIEZBUDOWANY.jar")
 
 # Wersja paczki - niezalezna od wersji moda, bo sama paczka tez bywa poprawiana
-PACK_VERSION = "1.4.0"
+PACK_VERSION = "1.5.0"
 # Prism i MultiMC biora ikone instancji z overrides/icon.png - sam modrinth.index.json
 # nie ma pola na ikone.
 PACK_ICON = Path(__file__).parent / "pack" / "icon.png"

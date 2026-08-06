@@ -69,11 +69,12 @@ public class EmoteWheel extends Screen {
             int half = active ? 26 : 20;
             gfx.fill(x - half, y - half, x + half, y + half, active ? 0xCC3A6EA5 : 0x99202020);
             gfx.item(new ItemStack(emotes[i].icon), x - 8, y - 12);
-            gfx.centeredText(font, Component.literal(emotes[i].symbol), x, y + 6, 0xFFFFFFFF);
+            gfx.centeredText(font, emotes[i].emoji(), x, y + 6, 0xFFFFFFFF);
         }
 
         Component center = hovered >= 0
-                ? Component.literal(emotes[hovered].pl).withStyle(ChatFormatting.YELLOW)
+                ? Component.empty().append(emotes[hovered].emoji())
+                        .append(Component.literal(" " + emotes[hovered].pl).withStyle(ChatFormatting.YELLOW))
                 : Component.literal("wybierz kierunek").withStyle(ChatFormatting.DARK_GRAY);
         gfx.centeredText(font, center, cx, cy - 4, 0xFFFFFFFF);
     }
