@@ -33,6 +33,8 @@ public class BmdConfig {
     /** Zasieg (w blokach), z ktorego echolokacja pokazuje kierunek dzwieku. */
     public double blindEchoRange = 24.0D;
     public boolean blindSlowness = false;
+    /** Lagodniejszy wariant: czern nie zakrywa hotbara i paskow zycia. */
+    public boolean blindShowHud = false;
 
     /** Czy niemy moze wystawic nad glowa dowolny przedmiot jako komunikat. */
     public boolean muteItemSign = true;

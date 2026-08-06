@@ -15,9 +15,18 @@ public class BlindHud implements HudElement {
 
     private static final int BLACK = 0xFF000000;
 
+    /** true = warstwa na wierzchu HUD (czern zakrywa wszystko), false = pod HUD. */
+    private final boolean over;
+
+    public BlindHud(boolean over) {
+        this.over = over;
+    }
+
     @Override
     public void extractRenderState(GuiGraphicsExtractor gfx, DeltaTracker delta) {
         if (ClientState.mine != Sense.BLIND) return;
+        // Rysuje tylko ta warstwa, ktora pasuje do ustawienia serwera - druga milczy.
+        if (over == ClientState.showHud) return;
 
         Minecraft mc = Minecraft.getInstance();
         int w = gfx.guiWidth();
@@ -25,9 +34,12 @@ public class BlindHud implements HudElement {
 
         gfx.fill(0, 0, w, h, BLACK);
 
+        // Jedyne wyjscie z ciemnosci: gracz musi wiedziec, ze da sie otworzyc czat.
+        // Historia czatu zostaje zakryta - widac tylko to, co sam wpisuje.
+        gfx.centeredText(mc.font, Component.literal("[T] czat  •  /bmd info"),
+                w / 2, h - 12, 0x33FFFFFF);
+
         if (ClientState.hardMode || mc.player == null) {
-            gfx.centeredText(mc.font,
-                    Component.literal("ciemno"), w / 2, h - 14, 0x22FFFFFF);
             return;
         }
 

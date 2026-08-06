@@ -1,6 +1,8 @@
 package pl.skynetgames.bmd;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -70,7 +72,12 @@ public class BmdMod implements ModInitializer {
 
         if (emoteId < 0) {
             // tabliczka z przedmiotem - przywilej niemego
-            if (!BmdConfig.get().muteItemSign || BmdState.get(player) != Sense.MUTE) return;
+            if (!BmdConfig.get().muteItemSign || BmdState.get(player) != Sense.MUTE) {
+                // Ciche odrzucenie wygladalo jak zepsuty mod - powiedz, o co chodzi.
+                player.sendSystemMessage(Component.literal("✕ Tabliczke z przedmiotem pokazuje tylko niemy.")
+                        .withStyle(ChatFormatting.RED), true);
+                return;
+            }
             Item item = BuiltInRegistries.ITEM.getValue(req.itemId());
             if (item == Items.AIR) return;
             itemId = BuiltInRegistries.ITEM.getKey(item);
