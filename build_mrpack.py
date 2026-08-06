@@ -34,14 +34,17 @@ EXTRA_MODS = [
     "full-brightness-toggle",
 ]
 
-BMD_JAR = Path(__file__).parent / "build" / "libs" / "bmd-1.0.0.jar"
+# Szukamy po wzorcu, zeby numer wersji siedzial wylacznie w gradle.properties
+_jars = sorted((Path(__file__).parent / "build" / "libs").glob("bmd-*.jar"))
+_jars = [j for j in _jars if "sources" not in j.name]
+BMD_JAR = _jars[-1] if _jars else Path("build/libs/bmd-NIEZBUDOWANY.jar")
 # Prism i MultiMC biora ikone instancji z overrides/icon.png - sam modrinth.index.json
 # nie ma pola na ikone.
 PACK_ICON = Path(__file__).parent / "pack" / "icon.png"
 OUT = Path(__file__).parent / "build" / f"BlindMuteDeaf-{MC_VERSION}.mrpack"
 
 # Wersja paczki i katalog strony - uzywane przy --publish
-PACK_VERSION = "1.0.0"
+PACK_VERSION = "1.1.0"
 WWW_DIR = Path("/var/www/skynetgames.org/html/download")
 
 API = "https://api.modrinth.com/v2"
@@ -120,7 +123,7 @@ def main():
             print(f"  ! brak {PACK_ICON} - paczka bez ikony")
 
         index["name"] = f"Blind Mute Deaf {MC_VERSION}"
-        index["versionId"] = f"1.0.0+{base_ver['version_number']}"
+        index["versionId"] = f"{PACK_VERSION}+{base_ver['version_number']}"
         index["summary"] = ("Tryb utraty zmyslow: slepy, niemy, gluchy. "
                             "Na bazie Fabulously Optimized + Simple Voice Chat.")
         (ext / "modrinth.index.json").write_text(
