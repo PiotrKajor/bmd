@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.kajor.bmd.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "MixinSoundManager"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
