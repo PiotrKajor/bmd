@@ -59,9 +59,9 @@ public final class Briefing {
                 if (c.muteHalfDamage) out.add(cannot("Zadajesz o polowe mniejsze obrazenia"));
                 if (c.muteCannotOpenContainers) out.add(cannot("Nie otwierasz skrzyn ani piecow"));
                 out.add(can("Widzisz i slyszysz wszystko - jestes oczami druzyny"));
-                out.add(can("Kolo gestow [G] - 12 znakow z dzwiekiem, widoczne nad glowa"));
+                out.add(can("Kolo gestow [LCtrl] - 12 znakow z dzwiekiem, widoczne nad glowa"));
                 if (c.muteItemSign) {
-                    out.add(can("Tabliczka z przedmiotem [B] - wybierz dowolny przedmiot z gry,"));
+                    out.add(can("Tabliczka z przedmiotem [LAlt] - wybierz dowolny przedmiot z gry,"));
                     out.add(can("  zawisnie nad twoja glowa na 10 sekund"));
                 }
                 out.add(hint("Gest ma dzwiek - slepy uslyszy, ze cos pokazujesz, ale nie co."));
@@ -75,7 +75,7 @@ public final class Briefing {
                 if (c.deafHidesNameTags) out.add(cannot("Nie widzisz nickow nad glowami - rozpoznajesz po skinie"));
                 if (c.deafAggroRangeDoubled) out.add(cannot("Moby wykrywaja cie z dwa razy wiekszej odleglosci"));
                 out.add(can("Mowisz normalnie - inni cie slysza, ty ich nie"));
-                out.add(can("Kolo gestow [G] dziala tak samo u ciebie"));
+                out.add(can("Kolo gestow [LCtrl] dziala tak samo u ciebie"));
                 out.add(hint("Patrz na ikony nad glowami. To twoj jedyny kanal odbiorczy."));
             }
             case NONE -> {

@@ -34,9 +34,9 @@ public class BmdClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         wheelKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-                "key.bmd.wheel", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, KeyMapping.Category.GAMEPLAY));
+                "key.bmd.wheel", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_CONTROL, KeyMapping.Category.GAMEPLAY));
         itemSignKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-                "key.bmd.item_sign", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, KeyMapping.Category.GAMEPLAY));
+                "key.bmd.item_sign", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, KeyMapping.Category.GAMEPLAY));
 
         ClientPlayNetworking.registerGlobalReceiver(BmdPayloads.Roster.TYPE, (payload, context) ->
                 context.client().execute(() -> {
