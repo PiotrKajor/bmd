@@ -30,14 +30,20 @@ public class BlindHud implements HudElement {
     @Override
     public void extractRenderState(GuiGraphicsExtractor gfx, DeltaTracker delta) {
         if (ClientState.mine != Sense.BLIND) return;
-        // W trybie latwym slepote robia wanilkowe efekty - nie zaslaniamy ekranu.
-        if (ClientState.blindMode == BlindMode.EASY) return;
         // Rysuje tylko warstwa pasujaca do ustawienia serwera, druga milczy.
         if (over == ClientState.showHud) return;
 
         Minecraft mc = Minecraft.getInstance();
         int w = gfx.guiWidth();
         int h = gfx.guiHeight();
+
+        if (ClientState.blindMode == BlindMode.EASY) {
+            // Same Blindness i Darkness zostawiaja sporo widocznosci - dokladamy
+            // przyciemnienie, zeby "latwy" nadal znaczyl slepote, a nie mgle.
+            int alpha = (int) (255 * Math.clamp(ClientState.easyDarkness, 0.0D, 1.0D));
+            if (alpha > 0) gfx.fill(0, 0, w, h, alpha << 24);
+            return;
+        }
 
         gfx.fill(0, 0, w, h, BLACK);
 

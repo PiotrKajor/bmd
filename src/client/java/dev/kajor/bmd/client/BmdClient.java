@@ -11,11 +11,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.client.gui.screens.DeathScreen;
-import net.minecraft.client.gui.screens.DisconnectedScreen;
-import net.minecraft.client.gui.screens.PauseScreen;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -46,6 +41,7 @@ public class BmdClient implements ClientModInitializer {
                     ClientState.blindMode = payload.blindMode();
                     ClientState.echoRange = payload.echoRange();
                     ClientState.showHud = payload.showHud();
+                    ClientState.easyDarkness = payload.easyDarkness();
                 }));
 
         ClientPlayNetworking.registerGlobalReceiver(BmdPayloads.Signal.TYPE, (payload, context) ->
@@ -70,7 +66,6 @@ public class BmdClient implements ClientModInitializer {
 
     private static void tick(Minecraft mc) {
         Echolocation.tick();
-        closeScreensForBlind(mc);
 
         if (wheelKey.consumeClick() && mc.gui.screen() == null && mc.player != null) {
             mc.gui.setScreen(new EmoteWheel(wheelKey));
@@ -85,25 +80,6 @@ public class BmdClient implements ClientModInitializer {
                                 .withStyle(ChatFormatting.GRAY));
             }
         }
-    }
-
-    /**
-     * Czern z HUD-u nie zakrywa otwartych ekranow - te rysuja sie pozniej. Bez tego
-     * slepy otwiera ekwipunek i widzi wszystko.
-     *
-     * Ekran czatu zostaje otwarty celowo: historia czatu jest elementem HUD, wiec
-     * czern ja zakrywa, a samo pole wpisywania rysuje sie nad nia. Slepy moze
-     * napisac /bmd, nie czytajac przy tym wiadomosci. Bez tego nie dalo sie
-     * wydac zadnej komendy z gry. Pauza i ekran smierci - zeby dalo sie wyjsc i odrodzic.
-     */
-    private static void closeScreensForBlind(Minecraft mc) {
-        if (ClientState.mine != Sense.BLIND) return;
-        Screen screen = mc.gui.screen();
-        if (screen == null || screen instanceof PauseScreen || screen instanceof DeathScreen
-                || screen instanceof DisconnectedScreen || screen instanceof ChatScreen) {
-            return;
-        }
-        mc.gui.setScreen(null);
     }
 
     public static void sendEmote(int emoteId) {

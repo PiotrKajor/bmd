@@ -17,6 +17,8 @@ public final class ClientState {
     public static double echoRange = 24.0D;
     /** Czy czern ma isc pod HUD (hotbar i paski widoczne). */
     public static boolean showHud = true;
+    /** Dodatkowe przyciemnienie ekranu w trybie latwym (0.0-1.0). */
+    public static double easyDarkness = 0.6D;
     public static final Map<UUID, Sense> ROSTER = new HashMap<>();
 
     /** Sygnaly wiszace nad glowami: gracz -> co i do kiedy. */
@@ -38,7 +40,8 @@ public final class ClientState {
     public static void reset() {
         mine = Sense.NONE;
         blindMode = BlindMode.NORMAL;
-        showHud = false;
+        showHud = true;
+        easyDarkness = 0.6D;
         ROSTER.clear();
         SIGNALS.clear();
         ECHOES.clear();

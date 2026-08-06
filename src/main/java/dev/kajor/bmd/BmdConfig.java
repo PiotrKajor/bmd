@@ -33,6 +33,8 @@ public class BmdConfig {
     /** Zasieg (w blokach), z ktorego echolokacja pokazuje kierunek dzwieku. */
     public double blindEchoRange = 24.0D;
     public boolean blindSlowness = false;
+    /** Tryb latwy: dodatkowe przyciemnienie ekranu 0.0-1.0 na wierzchu wanilkowych efektow. */
+    public double blindEasyDarkness = 0.6D;
     /** Slepy ma nie widziec swiata, ale swoj HUD (hotbar, zycie, glod) juz tak. */
     public boolean blindShowHud = true;
 
