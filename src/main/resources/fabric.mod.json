@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "bmd",
+  "version": "${version}",
+  "name": "Blind Mute Deaf",
+  "description": "Tryb zabawy: kazdy gracz traci jeden zmysl - wzrok, glos albo sluch. Komunikacja przez kolo gestow.",
+  "authors": ["SkynetGames"],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["pl.skynetgames.bmd.BmdMod"],
+    "client": ["pl.skynetgames.bmd.client.BmdClient"],
+    "voicechat": ["pl.skynetgames.bmd.voice.BmdVoicechatPlugin"]
+  },
+  "mixins": [
+    {
+      "config": "bmd.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "voicechat": "*"
+  }
+}
