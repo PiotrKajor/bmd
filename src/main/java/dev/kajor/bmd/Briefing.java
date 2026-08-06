@@ -49,6 +49,7 @@ public final class Briefing {
                 }
                 out.add(cannot("Nie widzisz swiata ani ekwipunku"));
                 if (c.blindSlowness) out.add(cannot("Poruszasz sie wolniej (Spowolnienie I)"));
+                if (c.onlyBlindCanCraft) out.add(can("Tylko ty craftujesz - reszta nosi ci surowce"));
                 out.add(hint("Czat otworzysz [T] - komendy dzialaja, wiadomosci i tak nie przeczytasz."));
             }
             case MUTE -> {
@@ -58,6 +59,7 @@ public final class Briefing {
                 if (c.muteCannotAttack) out.add(cannot("Nie zadajesz obrazen - zadnych, nikomu"));
                 if (c.muteHalfDamage) out.add(cannot("Zadajesz o polowe mniejsze obrazenia"));
                 if (c.muteCannotOpenContainers) out.add(cannot("Nie otwierasz skrzyn ani piecow"));
+                if (c.onlyBlindCanCraft) out.add(cannot("Nie craftujesz - crafting umie tylko slepy"));
                 out.add(can("Widzisz i slyszysz wszystko - jestes oczami druzyny"));
                 out.add(can("Kolo gestow [LCtrl] - 15 znakow z dzwiekiem, widoczne nad glowa"));
                 if (c.muteItemSign) {
@@ -70,7 +72,11 @@ public final class Briefing {
                 out.add(flavor("Cisza absolutna. Zero dzwieku z gry i zero glosu."));
                 out.add(cannot("Nie slyszysz nikogo na Simple Voice Chat"));
                 out.add(cannot("Nie slyszysz gry: krokow, creepera, dzwonka, muzyki"));
-                if (c.deafCannotUseItems) out.add(cannot("Nie stawiasz blokow i nie uzywasz PPM (jedzenie, luk, perly)"));
+                if (c.deafCannotUseItems) {
+                    out.add(cannot("Nie stawiasz blokow i nie uzywasz PPM (luk, perly)"));
+                    out.add(can("Jesc i pic mozesz normalnie"));
+                }
+                if (c.onlyBlindCanCraft) out.add(cannot("Nie craftujesz - crafting umie tylko slepy"));
                 if (c.deafMinesSlower) out.add(cannot("Kopiesz dwa razy wolniej"));
                 if (c.deafHidesNameTags) out.add(cannot("Nie widzisz nickow nad glowami - rozpoznajesz po skinie"));
                 if (c.deafAggroRangeDoubled) out.add(cannot("Moby wykrywaja cie z dwa razy wiekszej odleglosci"));

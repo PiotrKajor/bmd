@@ -10,7 +10,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public final class Debuffs {
 
@@ -59,11 +61,18 @@ public final class Debuffs {
 
         UseItemCallback.EVENT.register((player, level, hand) -> {
             if (BmdConfig.get().deafCannotUseItems && sense(player) == Sense.DEAF) {
-                warn(player, "Gluchy nie uzywa przedmiotow prawym przyciskiem.");
+                // Glod nie jest czescia kary - blokada PPM nie moze oznaczac smierci glodowej.
+                if (isFood(player.getItemInHand(hand))) return InteractionResult.PASS;
+                warn(player, "Gluchy nie uzywa przedmiotow prawym przyciskiem (jesc mozesz).");
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
         });
+    }
+
+    /** Cokolwiek da sie zjesc albo wypic - liczy sie komponent, nie lista przedmiotow. */
+    private static boolean isFood(ItemStack stack) {
+        return stack.get(DataComponents.FOOD) != null || stack.get(DataComponents.CONSUMABLE) != null;
     }
 
     private static Sense sense(Player player) {

@@ -4,15 +4,24 @@
   "version": "${version}",
   "name": "Blind Mute Deaf",
   "description": "Tryb zabawy: kazdy gracz traci jeden zmysl - wzrok, glos albo sluch. Komunikacja przez kolo gestow.",
-  "authors": ["Piotr Kajor"],
+  "authors": [
+    "Piotr Kajor"
+  ],
   "license": "MIT",
   "environment": "*",
   "entrypoints": {
-    "main": ["dev.kajor.bmd.BmdMod"],
-    "client": ["dev.kajor.bmd.client.BmdClient"],
-    "voicechat": ["dev.kajor.bmd.voice.BmdVoicechatPlugin"]
+    "main": [
+      "dev.kajor.bmd.BmdMod"
+    ],
+    "client": [
+      "dev.kajor.bmd.client.BmdClient"
+    ],
+    "voicechat": [
+      "dev.kajor.bmd.voice.BmdVoicechatPlugin"
+    ]
   },
   "mixins": [
+    "bmd.mixins.json",
     {
       "config": "bmd.client.mixins.json",
       "environment": "client"
