@@ -27,7 +27,7 @@ public class MixinResultSlot {
     @Inject(method = "mayPickup", at = @At("HEAD"), cancellable = true)
     private void bmd$onlyBlindCrafts(Player player, CallbackInfoReturnable<Boolean> cir) {
         if (!((Object) this instanceof ResultSlot)) return;
-        if (!BmdConfig.get().onlyBlindCanCraft) return;
+        if (!BmdState.effectsActive() || !BmdConfig.get().onlyBlindCanCraft) return;
 
         Sense sense = BmdState.get(player.getUUID());
         // NONE to gracz bez przydzielonej klasy - jego nie ograniczamy.

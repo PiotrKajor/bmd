@@ -53,6 +53,7 @@
   "bmd.goal.cleared": "Wyzwanie anulowane.",
   "bmd.goal.unknown": "Nie ma takiego celu.",
   "bmd.goal.progress": "Postęp: %s / %s",
+  "bmd.goal.effects_off": "Zmysły wróciły wszystkim - wyzwanie skończone.",
   "bmd.goal.time": "Czas: %s",
   "bmd.goal.difficulty.easy": "Poziom: łatwy",
   "bmd.goal.difficulty.normal": "Poziom: normalny",

@@ -83,6 +83,8 @@ COMMON = {
     "bmd.goal.cleared": ("Wyzwanie anulowane.", "Challenge cancelled."),
     "bmd.goal.unknown": ("Nie ma takiego celu.", "No such goal."),
     "bmd.goal.progress": ("Postęp: %s / %s", "Progress: %s / %s"),
+    "bmd.goal.effects_off": ("Zmysły wróciły wszystkim - wyzwanie skończone.",
+                             "Everyone's senses are back - the challenge is over."),
     "bmd.goal.time": ("Czas: %s", "Time: %s"),
     "bmd.goal.difficulty.easy": ("Poziom: łatwy", "Difficulty: easy"),
     "bmd.goal.difficulty.normal": ("Poziom: normalny", "Difficulty: normal"),

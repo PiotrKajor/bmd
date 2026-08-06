@@ -33,7 +33,7 @@ public class BlindHud implements HudElement {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor gfx, DeltaTracker delta) {
-        if (ClientState.mine != Sense.BLIND) return;
+        if (ClientState.mine != Sense.BLIND || !ClientState.effectsActive()) return;
         // Rysuje tylko warstwa pasujaca do ustawienia serwera, druga milczy.
         if (over == ClientState.showHud) return;
 

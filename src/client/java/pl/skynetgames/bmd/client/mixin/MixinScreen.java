@@ -24,7 +24,7 @@ public class MixinScreen {
     @Inject(method = "extractBackground", at = @At("TAIL"))
     private void bmd$blackoutBackground(GuiGraphicsExtractor gfx, int mouseX, int mouseY,
                                         float partialTick, CallbackInfo ci) {
-        if (ClientState.mine != Sense.BLIND) return;
+        if (ClientState.mine != Sense.BLIND || !ClientState.effectsActive()) return;
         // W trybie latwym slepote robia wanilkowe efekty - nie zaslaniamy ekranu.
         if (ClientState.blindMode == BlindMode.EASY) return;
         gfx.fill(0, 0, gfx.guiWidth(), gfx.guiHeight(), 0xFF000000);
