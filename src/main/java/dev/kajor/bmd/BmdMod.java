@@ -39,6 +39,7 @@ public class BmdMod implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(BmdState::load);
         CommandRegistrationCallback.EVENT.register((dispatcher, access, env) -> BmdCommand.register(dispatcher));
         Debuffs.register();
+        ModCheck.register();
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             BmdSync.broadcast(server);

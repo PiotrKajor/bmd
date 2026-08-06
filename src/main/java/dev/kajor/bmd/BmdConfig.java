@@ -37,6 +37,9 @@ public class BmdConfig {
     /** Czy niemy moze wystawic nad glowa dowolny przedmiot jako komunikat. */
     public boolean muteItemSign = true;
 
+    /** Wyrzucac graczy bez moda po stronie klienta. Patrz ModCheck - bez moda tryb jest do polowy fikcja. */
+    public boolean requireClientMod = true;
+
     public static BmdConfig get() {
         if (instance == null) instance = new BmdConfig();
         return instance;
