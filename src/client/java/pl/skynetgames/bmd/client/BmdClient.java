@@ -52,7 +52,6 @@ public class BmdClient implements ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ClientState.reset());
 
         // Czern musi byc na samym wierzchu, inaczej slepy czyta swoj ekwipunek.
-        HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(BmdMod.MOD_ID, "signals"), new SignalHud());
         // Dwie warstwy czerni, bo rejestracja HUD jest jednorazowa, a o tym, ktora ma
         // dzialac, decyduje flaga z serwera. "under" rysuje sie przed reszta HUD
         // (hotbar zostaje widoczny), "over" na samym koncu (czern zakrywa wszystko).
