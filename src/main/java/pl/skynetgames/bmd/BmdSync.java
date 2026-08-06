@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import pl.skynetgames.bmd.goal.GoalState;
 import pl.skynetgames.bmd.net.BmdPayloads;
 
 public final class BmdSync {
@@ -19,6 +20,17 @@ public final class BmdSync {
         ServerPlayNetworking.send(player, new BmdPayloads.Roster(
                 BmdState.all(), BmdState.get(player), BlindMode.byName(BmdConfig.get().blindMode), BmdConfig.get().blindEchoRange,
                 BmdConfig.get().blindShowHud, BmdConfig.get().blindEasyDarkness));
+    }
+
+    /** Stan wyzwania - wysylany przy kazdej zmianie, nie co tick. */
+    public static void broadcastGoal(MinecraftServer server) {
+        BmdPayloads.GoalInfo info = new BmdPayloads.GoalInfo(
+                GoalState.goal() == null ? null : GoalState.goal().id(),
+                GoalState.startedAt(),
+                GoalState.isFinished() ? GoalState.elapsedMs() : 0L);
+        for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+            ServerPlayNetworking.send(p, info);
+        }
     }
 
     /** Wyswietla graczowi opis jego klasy. */

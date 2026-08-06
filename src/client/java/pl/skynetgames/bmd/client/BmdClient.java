@@ -49,12 +49,20 @@ public class BmdClient implements ClientModInitializer {
                         new ClientState.Signal(payload.emoteId(), payload.itemId(),
                                 System.currentTimeMillis() + SIGNAL_LIFETIME_MS))));
 
+        ClientPlayNetworking.registerGlobalReceiver(BmdPayloads.GoalInfo.TYPE, (payload, context) ->
+                context.client().execute(() -> {
+                    ClientState.goalId = payload.goalId();
+                    ClientState.goalStartedAt = payload.startedAt();
+                    ClientState.goalFinishedMs = payload.finishedMs();
+                }));
+
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ClientState.reset());
 
         // Czern musi byc na samym wierzchu, inaczej slepy czyta swoj ekwipunek.
         // Dwie warstwy czerni, bo rejestracja HUD jest jednorazowa, a o tym, ktora ma
         // dzialac, decyduje flaga z serwera. "under" rysuje sie przed reszta HUD
         // (hotbar zostaje widoczny), "over" na samym koncu (czern zakrywa wszystko).
+        HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(BmdMod.MOD_ID, "goal"), new GoalHud());
         HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS,
                 Identifier.fromNamespaceAndPath(BmdMod.MOD_ID, "blind_under"), new BlindHud(false));
         HudElementRegistry.addLast(
@@ -74,9 +82,8 @@ public class BmdClient implements ClientModInitializer {
             if (ClientState.mine == Sense.MUTE) {
                 mc.gui.setScreen(new ItemSignScreen());
             } else {
-                mc.player.sendOverlayMessage(
-                        Component.literal("Tabliczka z przedmiotem to przywilej niemego.")
-                                .withStyle(ChatFormatting.GRAY));
+                mc.player.sendOverlayMessage(Component.translatable("bmd.sign.mute_only")
+                        .withStyle(ChatFormatting.GRAY));
             }
         }
     }
@@ -86,10 +93,9 @@ public class BmdClient implements ClientModInitializer {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
             Emote e = Emote.byId(emoteId);
-            mc.player.sendOverlayMessage(Component.literal("Pokazujesz: ")
-                    .withStyle(ChatFormatting.YELLOW)
-                    .append(e.emoji())
-                    .append(Component.literal(" " + e.pl).withStyle(ChatFormatting.YELLOW)));
+            mc.player.sendOverlayMessage(Component.translatable("bmd.wheel.showing",
+                    Component.empty().append(e.emoji()).append(Component.literal(" "))
+                            .append(e.displayName())).withStyle(ChatFormatting.YELLOW));
         }
     }
 
@@ -97,7 +103,7 @@ public class BmdClient implements ClientModInitializer {
         ClientPlayNetworking.send(new BmdPayloads.SignalRequest(-1, itemId));
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
-            mc.player.sendOverlayMessage(Component.literal("Pokazujesz przedmiot: " + itemId.getPath())
+            mc.player.sendOverlayMessage(Component.translatable("bmd.sign.showing", itemId.getPath())
                     .withStyle(ChatFormatting.YELLOW));
         }
     }

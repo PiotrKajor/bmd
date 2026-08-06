@@ -65,7 +65,7 @@ public class ItemSignScreen extends Screen {
         gfx.fill(0, 0, gfx.guiWidth(), gfx.guiHeight(), 0xCC000000);
         super.extractRenderState(gfx, mouseX, mouseY, partialTick);
 
-        gfx.centeredText(font, Component.literal("Co chcesz pokazac?").withStyle(ChatFormatting.YELLOW),
+        gfx.centeredText(font, Component.translatable("bmd.sign.search").withStyle(ChatFormatting.YELLOW),
                 gfx.guiWidth() / 2, gfx.guiHeight() / 2 - 78, 0xFFFFFFFF);
 
         int left = (gfx.guiWidth() - COLUMNS * CELL) / 2;
@@ -83,7 +83,7 @@ public class ItemSignScreen extends Screen {
         }
 
         if (results.isEmpty()) {
-            gfx.centeredText(font, Component.literal("nic nie znaleziono").withStyle(ChatFormatting.DARK_GRAY),
+            gfx.centeredText(font, Component.translatable("bmd.sign.nothing").withStyle(ChatFormatting.DARK_GRAY),
                     gfx.guiWidth() / 2, top + 10, 0xFFFFFFFF);
         }
     }

@@ -73,9 +73,9 @@ public class EmoteWheel extends Screen {
         }
 
         Component center = hovered >= 0
-                ? Component.empty().append(emotes[hovered].emoji())
-                        .append(Component.literal(" " + emotes[hovered].pl).withStyle(ChatFormatting.YELLOW))
-                : Component.literal("wybierz kierunek").withStyle(ChatFormatting.DARK_GRAY);
+                ? Component.empty().append(emotes[hovered].emoji()).append(Component.literal(" "))
+                        .append(emotes[hovered].displayName().copy().withStyle(ChatFormatting.YELLOW))
+                : Component.translatable("bmd.wheel.pick").withStyle(ChatFormatting.DARK_GRAY);
         gfx.centeredText(font, center, cx, cy - 4, 0xFFFFFFFF);
     }
 

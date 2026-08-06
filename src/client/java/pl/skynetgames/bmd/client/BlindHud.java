@@ -52,7 +52,7 @@ public class BlindHud implements HudElement {
         gfx.fill(0, 0, w, h, BLACK);
 
         // Jedyne wyjscie z ciemnosci: gracz musi wiedziec, ze da sie otworzyc czat.
-        gfx.centeredText(mc.font, Component.literal("[T] czat  •  /bmd info"),
+        gfx.centeredText(mc.font, Component.translatable("bmd.blind.hint"),
                 w / 2, h - 12, 0x33FFFFFF);
 
         if (ClientState.blindMode == BlindMode.HARD || mc.player == null) {

@@ -69,16 +69,12 @@ public final class ModCheck {
         BmdMod.LOG.info("Wyrzucono {} - brak moda Blind Mute Deaf po stronie klienta",
                 player.getGameProfile().name());
         player.connection.disconnect(Component.empty()
-                .append(Component.literal("Brakuje moda Blind Mute Deaf\n\n")
+                .append(Component.translatable("bmd.kick.no_mod")
                         .withStyle(ChatFormatting.RED, ChatFormatting.BOLD))
-                .append(Component.literal("Bez niego slepy widzi, a gluchy slyszy gre -\n")
-                        .withStyle(ChatFormatting.GRAY))
-                .append(Component.literal("polowa trybu siedzi po stronie klienta.\n\n")
-                        .withStyle(ChatFormatting.GRAY))
-                .append(Component.literal("Wrzuc bmd.jar do folderu mods/\n")
-                        .withStyle(ChatFormatting.WHITE))
-                .append(Component.literal("razem z Fabric API i Simple Voice Chat.")
-                        .withStyle(ChatFormatting.WHITE)));
+                .append(Component.literal("\n\n"))
+                .append(Component.translatable("bmd.kick.no_mod_why").withStyle(ChatFormatting.GRAY))
+                .append(Component.literal("\n\n"))
+                .append(Component.translatable("bmd.kick.no_mod_how").withStyle(ChatFormatting.WHITE)));
     }
 
     private ModCheck() {

@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Opis klasy wyswietlany graczowi. Generowany z aktualnego configu, wiec zawsze
+ * Opis klasy wyswietlany graczowi. Skladany z aktualnego configu, wiec zawsze
  * zgadza sie z tym, co mod faktycznie blokuje - nie z tym, co kiedys blokowal.
+ *
+ * Same teksty to klucze tlumaczen, wiec kazdy gracz czyta opis w swoim jezyku,
+ * mimo ze sklada go serwer.
  */
 public final class Briefing {
 
@@ -19,73 +22,65 @@ public final class Briefing {
 
         out.add(Component.literal("═══════════════════════════════").withStyle(ChatFormatting.DARK_GRAY));
         out.add(Component.literal("  ").append(sense.emoji()).append(Component.literal(" "))
-                .append(Component.literal(sense.pl.toUpperCase()).withStyle(sense.color, ChatFormatting.BOLD)));
+                .append(sense.displayName().copy().withStyle(sense.color, ChatFormatting.BOLD)));
         out.add(Component.empty());
 
         switch (sense) {
             case BLIND -> {
                 BlindMode mode = BlindMode.byName(c.blindMode);
-                out.add(flavor("Tryb slepoty: " + mode.pl + " - " + mode.opis + "."));
+                out.add(flavor(Component.translatable("bmd.brief.blind.mode", mode.displayName())));
                 switch (mode) {
                     case EASY -> {
-                        out.add(can("Widzisz zarys tuz przed soba (Blindness + Darkness)"));
-                        out.add(cannot("Nie zobaczysz nic dalej niz kilka krokow"));
+                        out.add(can("bmd.brief.blind.easy1"));
+                        out.add(cannot("bmd.brief.blind.easy2"));
                     }
                     case NORMAL -> {
-                        out.add(can("Echolokacja: dzwieki w promieniu " + (int) c.blindEchoRange
-                                + " blokow zapalaja znacznik kierunku"));
-                        out.add(can("▲ dzwiek nad toba   ● na twoim poziomie   ▼ pod toba"));
-                        out.add(can("Im blizej zrodlo, tym znacznik blizej srodka i jasniejszy"));
+                        out.add(can(Component.translatable("bmd.brief.blind.echo", (int) c.blindEchoRange)));
+                        out.add(can("bmd.brief.blind.echo2"));
+                        out.add(can("bmd.brief.blind.echo3"));
                     }
-                    case HARD -> out.add(cannot("Zero podpowiedzi - zostaje sam sluch"));
+                    case HARD -> out.add(cannot("bmd.brief.blind.hard"));
                 }
-                out.add(can("Slyszysz wszystko - gre i glos na Simple Voice Chat"));
-                out.add(can("Mowisz normalnie - jestes uszami i ustami druzyny"));
-                if (c.blindShowHud) {
-                    out.add(can("Widzisz swoj HUD: hotbar, zycie i glod"));
-                } else {
-                    out.add(cannot("Nie widzisz nawet wlasnego HUD-u"));
-                }
-                out.add(cannot("Nie widzisz swiata ani ekwipunku"));
-                if (c.blindSlowness) out.add(cannot("Poruszasz sie wolniej (Spowolnienie I)"));
-                if (c.onlyBlindCanCraft) out.add(can("Tylko ty craftujesz - reszta nosi ci surowce"));
-                out.add(hint("Czat otworzysz [T] - komendy dzialaja, wiadomosci i tak nie przeczytasz."));
+                out.add(can("bmd.brief.blind.hears"));
+                out.add(can("bmd.brief.blind.speaks"));
+                out.add(c.blindShowHud ? can("bmd.brief.blind.hud") : cannot("bmd.brief.blind.nohud"));
+                out.add(cannot("bmd.brief.blind.noworld"));
+                if (c.onlyBlindCanCraft) out.add(can("bmd.brief.blind.craft"));
+                if (c.blindSlowness) out.add(cannot("bmd.brief.blind.slow"));
+                out.add(hint("bmd.brief.blind.hint"));
             }
             case MUTE -> {
-                out.add(flavor("Nie wydajesz dzwieku. Mikrofon jest odciety na serwerze."));
-                out.add(cannot("Nie mowisz na Simple Voice Chat - nikt cie nie uslyszy"));
-                if (c.muteCannotChat) out.add(cannot("Nie piszesz na czacie ani /msg"));
-                if (c.muteCannotAttack) out.add(cannot("Nie zadajesz obrazen - zadnych, nikomu"));
-                if (c.muteHalfDamage) out.add(cannot("Zadajesz o polowe mniejsze obrazenia"));
-                if (c.muteCannotOpenContainers) out.add(cannot("Nie otwierasz skrzyn ani piecow"));
-                if (c.onlyBlindCanCraft) out.add(cannot("Nie craftujesz - crafting umie tylko slepy"));
-                out.add(can("Widzisz i slyszysz wszystko - jestes oczami druzyny"));
-                out.add(can("Kolo gestow [LCtrl] - 15 znakow z dzwiekiem, widoczne nad glowa"));
-                if (c.muteItemSign) {
-                    out.add(can("Tabliczka z przedmiotem [LAlt] - wybierz dowolny przedmiot z gry,"));
-                    out.add(can("  zawisnie nad twoja glowa na 10 sekund"));
-                }
-                out.add(hint("Gest ma dzwiek - slepy uslyszy, ze cos pokazujesz, ale nie co."));
+                out.add(flavor(Component.translatable("bmd.brief.mute.flavor")));
+                out.add(cannot("bmd.brief.mute.novoice"));
+                if (c.muteCannotChat) out.add(cannot("bmd.brief.mute.nochat"));
+                if (c.muteCannotAttack) out.add(cannot("bmd.brief.mute.noattack"));
+                if (c.muteHalfDamage) out.add(cannot("bmd.brief.mute.halfdmg"));
+                if (c.muteCannotOpenContainers) out.add(cannot("bmd.brief.mute.nocontainers"));
+                if (c.onlyBlindCanCraft) out.add(cannot("bmd.brief.mute.nocraft"));
+                out.add(can("bmd.brief.mute.sees"));
+                out.add(can("bmd.brief.mute.wheel"));
+                if (c.muteItemSign) out.add(can("bmd.brief.mute.sign"));
+                out.add(hint("bmd.brief.mute.hint"));
             }
             case DEAF -> {
-                out.add(flavor("Cisza absolutna. Zero dzwieku z gry i zero glosu."));
-                out.add(cannot("Nie slyszysz nikogo na Simple Voice Chat"));
-                out.add(cannot("Nie slyszysz gry: krokow, creepera, dzwonka, muzyki"));
+                out.add(flavor(Component.translatable("bmd.brief.deaf.flavor")));
+                out.add(cannot("bmd.brief.deaf.novoice"));
+                out.add(cannot("bmd.brief.deaf.nogame"));
                 if (c.deafCannotUseItems) {
-                    out.add(cannot("Nie stawiasz blokow i nie uzywasz PPM (luk, perly)"));
-                    out.add(can("Jesc i pic mozesz normalnie"));
+                    out.add(cannot("bmd.brief.deaf.noplace"));
+                    out.add(can("bmd.brief.deaf.caneat"));
                 }
-                if (c.onlyBlindCanCraft) out.add(cannot("Nie craftujesz - crafting umie tylko slepy"));
-                if (c.deafMinesSlower) out.add(cannot("Kopiesz dwa razy wolniej"));
-                if (c.deafHidesNameTags) out.add(cannot("Nie widzisz nickow nad glowami - rozpoznajesz po skinie"));
-                if (c.deafAggroRangeDoubled) out.add(cannot("Moby wykrywaja cie z dwa razy wiekszej odleglosci"));
-                out.add(can("Mowisz normalnie - inni cie slysza, ty ich nie"));
-                out.add(can("Kolo gestow [LCtrl] dziala tak samo u ciebie"));
-                out.add(hint("Patrz na ikony nad glowami. To twoj jedyny kanal odbiorczy."));
+                if (c.onlyBlindCanCraft) out.add(cannot("bmd.brief.deaf.nocraft"));
+                if (c.deafMinesSlower) out.add(cannot("bmd.brief.deaf.slowmine"));
+                if (c.deafHidesNameTags) out.add(cannot("bmd.brief.deaf.nonames"));
+                if (c.deafAggroRangeDoubled) out.add(cannot("bmd.brief.deaf.aggro"));
+                out.add(can("bmd.brief.deaf.speaks"));
+                out.add(can("bmd.brief.deaf.wheel"));
+                out.add(hint("bmd.brief.deaf.hint"));
             }
             case NONE -> {
-                out.add(flavor("Masz wszystkie zmysly. Nie masz zadnych ograniczen."));
-                out.add(hint("/bmd random przydzieli klasy graczom."));
+                out.add(flavor(Component.translatable("bmd.brief.none.flavor")));
+                out.add(hint("bmd.brief.none.hint"));
             }
         }
 
@@ -93,23 +88,28 @@ public final class Briefing {
         return out;
     }
 
-    private static MutableComponent can(String s) {
+    private static MutableComponent can(String key) {
+        return can(Component.translatable(key));
+    }
+
+    private static MutableComponent can(Component text) {
         return Component.literal(" ✔ ").withStyle(ChatFormatting.GREEN)
-                .append(Component.literal(s).withStyle(ChatFormatting.WHITE));
+                .append(text.copy().withStyle(ChatFormatting.WHITE));
     }
 
-    private static MutableComponent cannot(String s) {
+    private static MutableComponent cannot(String key) {
         return Component.literal(" ✕ ").withStyle(ChatFormatting.RED)
-                .append(Component.literal(s).withStyle(ChatFormatting.GRAY));
+                .append(Component.translatable(key).withStyle(ChatFormatting.GRAY));
     }
 
-    private static MutableComponent flavor(String s) {
-        return Component.literal("  " + s).withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_AQUA);
+    private static MutableComponent flavor(Component text) {
+        return Component.literal("  ").append(text.copy()
+                .withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_AQUA));
     }
 
-    private static MutableComponent hint(String s) {
+    private static MutableComponent hint(String key) {
         return Component.literal(" ➜ ").withStyle(ChatFormatting.YELLOW)
-                .append(Component.literal(s).withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC));
+                .append(Component.translatable(key).withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC));
     }
 
     private Briefing() {

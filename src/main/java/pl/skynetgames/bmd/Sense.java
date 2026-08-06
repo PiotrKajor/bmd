@@ -10,18 +10,19 @@ import net.minecraft.resources.Identifier;
  * Klasa gracza. Kazda odbiera jeden zmysl i dokłada wlasne ograniczenia.
  */
 public enum Sense {
-    NONE("Widzacy", ChatFormatting.GRAY, "✔"),
-    BLIND("Slepy", ChatFormatting.DARK_PURPLE, "✕"),
-    MUTE("Niemy", ChatFormatting.GOLD, "♪"),
-    DEAF("Gluchy", ChatFormatting.AQUA, "⚠");
+    NONE(ChatFormatting.GRAY, "✔"),
+    BLIND(ChatFormatting.DARK_PURPLE, "✕"),
+    MUTE(ChatFormatting.GOLD, "♪"),
+    DEAF(ChatFormatting.AQUA, "⚠");
 
-    public final String pl;
+    /** Klucz tlumaczenia nazwy klasy. */
+    public final String key;
     public final ChatFormatting color;
     /** Symbol z BMP - vanilla font go wyrenderuje, w przeciwienstwie do emoji. */
     public final String icon;
 
-    Sense(String pl, ChatFormatting color, String icon) {
-        this.pl = pl;
+    Sense(ChatFormatting color, String icon) {
+        this.key = "bmd.sense." + name().toLowerCase();
         this.color = color;
         this.icon = icon;
     }
@@ -39,6 +40,10 @@ public enum Sense {
         // BLIND/MUTE/DEAF maja ordinal 1..3, glify ida po kolei od SENSE_GLYPH_START
         char glyph = (char) (SENSE_GLYPH_START + ordinal() - 1);
         return Component.literal(String.valueOf(glyph)).withStyle(Style.EMPTY.withFont(EMOJI_FONT));
+    }
+
+    public Component displayName() {
+        return Component.translatable(key);
     }
 
     public static Sense byName(String s) {
