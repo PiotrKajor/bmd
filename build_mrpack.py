@@ -157,6 +157,14 @@ def main():
                 print(f"\nopublikowano: {target}")
                 print("  https://skynetgames.org/download/"
                       + urllib.parse.quote(target.name))
+
+                # Sam mod - dla grajacych na wlasnym zestawie modow
+                jar_target = WWW_DIR / BMD_JAR.name
+                shutil.copy(BMD_JAR, jar_target)
+                jar_target.chmod(0o644)
+                print(f"opublikowano: {jar_target}")
+                print("  https://skynetgames.org/download/"
+                      + urllib.parse.quote(jar_target.name))
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
