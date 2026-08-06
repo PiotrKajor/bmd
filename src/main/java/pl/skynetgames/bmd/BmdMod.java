@@ -42,6 +42,7 @@ public class BmdMod implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, access, env) -> BmdCommand.register(dispatcher));
         Debuffs.register();
         ModCheck.register();
+        BlindEffects.register();
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             BmdSync.broadcast(server);

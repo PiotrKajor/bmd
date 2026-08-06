@@ -1,6 +1,7 @@
 package pl.skynetgames.bmd.client;
 
 import net.minecraft.resources.Identifier;
+import pl.skynetgames.bmd.BlindMode;
 import pl.skynetgames.bmd.Sense;
 
 import java.util.HashMap;
@@ -11,11 +12,11 @@ import java.util.UUID;
 public final class ClientState {
 
     public static Sense mine = Sense.NONE;
-    public static boolean hardMode = false;
+    public static BlindMode blindMode = BlindMode.NORMAL;
     /** Zasieg echolokacji - przychodzi z serwera, zeby klient nie zgadywal. */
     public static double echoRange = 24.0D;
     /** Czy czern ma isc pod HUD (hotbar i paski widoczne). */
-    public static boolean showHud = false;
+    public static boolean showHud = true;
     public static final Map<UUID, Sense> ROSTER = new HashMap<>();
 
     /** Sygnaly wiszace nad glowami: gracz -> co i do kiedy. */
@@ -36,7 +37,7 @@ public final class ClientState {
 
     public static void reset() {
         mine = Sense.NONE;
-        hardMode = false;
+        blindMode = BlindMode.NORMAL;
         showHud = false;
         ROSTER.clear();
         SIGNALS.clear();

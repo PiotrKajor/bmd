@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import pl.skynetgames.bmd.BlindMode;
 import pl.skynetgames.bmd.Sense;
 import pl.skynetgames.bmd.client.ClientState;
 import pl.skynetgames.bmd.client.Echolocation;
@@ -30,7 +31,7 @@ public class MixinSoundManager {
             cir.setReturnValue(SoundEngine.PlayResult.NOT_STARTED);
             return;
         }
-        if (ClientState.mine == Sense.BLIND && !ClientState.hardMode) {
+        if (ClientState.mine == Sense.BLIND && ClientState.blindMode == BlindMode.NORMAL) {
             Echolocation.onSound(sound);
         }
     }

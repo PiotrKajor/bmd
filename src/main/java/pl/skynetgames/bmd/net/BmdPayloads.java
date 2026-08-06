@@ -4,6 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import pl.skynetgames.bmd.BlindMode;
 import pl.skynetgames.bmd.BmdMod;
 import pl.skynetgames.bmd.Sense;
 
@@ -25,7 +26,7 @@ public final class BmdPayloads {
      * i czy leci tryb hard. Wysylane w calosci przy kazdej zmianie - lista graczy
      * na jednym serwerze jest mala, delty nie sa tego warte.
      */
-    public record Roster(Map<UUID, Sense> senses, Sense mine, boolean hardMode, double echoRange,
+    public record Roster(Map<UUID, Sense> senses, Sense mine, BlindMode blindMode, double echoRange,
                          boolean showHud) implements CustomPacketPayload {
         public static final Type<Roster> TYPE =
                 new Type<>(Identifier.fromNamespaceAndPath(BmdMod.MOD_ID, "roster"));
@@ -38,7 +39,7 @@ public final class BmdPayloads {
                         buf.writeVarInt(s.ordinal());
                     });
                     buf.writeVarInt(v.mine.ordinal());
-                    buf.writeBoolean(v.hardMode);
+                    buf.writeVarInt(v.blindMode.ordinal());
                     buf.writeDouble(v.echoRange);
                     buf.writeBoolean(v.showHud);
                 },
@@ -48,7 +49,8 @@ public final class BmdPayloads {
                     for (int i = 0; i < n; i++) {
                         map.put(buf.readUUID(), readSense(buf));
                     }
-                    return new Roster(map, readSense(buf), buf.readBoolean(), buf.readDouble(), buf.readBoolean());
+                    return new Roster(map, readSense(buf), BlindMode.byOrdinal(buf.readVarInt()),
+                            buf.readDouble(), buf.readBoolean());
                 });
 
         @Override
