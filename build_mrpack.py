@@ -33,6 +33,9 @@ EXTRA_MODS = [
 ]
 
 BMD_JAR = Path(__file__).parent / "build" / "libs" / "bmd-1.0.0.jar"
+# Prism i MultiMC biora ikone instancji z overrides/icon.png - sam modrinth.index.json
+# nie ma pola na ikone.
+PACK_ICON = Path(__file__).parent / "pack" / "icon.png"
 OUT = Path(__file__).parent / "build" / f"BlindMuteDeaf-{MC_VERSION}.mrpack"
 
 API = "https://api.modrinth.com/v2"
@@ -103,6 +106,12 @@ def main():
         mods_dir.mkdir(parents=True, exist_ok=True)
         shutil.copy(BMD_JAR, mods_dir / BMD_JAR.name)
         print(f"  + {BMD_JAR.name} (overrides)")
+
+        if PACK_ICON.exists():
+            shutil.copy(PACK_ICON, ext / "overrides" / "icon.png")
+            print(f"  + icon.png (overrides)")
+        else:
+            print(f"  ! brak {PACK_ICON} - paczka bez ikony")
 
         index["name"] = f"Blind Mute Deaf {MC_VERSION}"
         index["versionId"] = f"1.0.0+{base_ver['version_number']}"
