@@ -87,8 +87,10 @@ public class BmdClient implements ClientModInitializer {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
             Emote e = Emote.byId(emoteId);
-            mc.player.sendOverlayMessage(Component.literal("Pokazujesz: " + e.symbol + " " + e.pl)
-                    .withStyle(ChatFormatting.YELLOW));
+            mc.player.sendOverlayMessage(Component.literal("Pokazujesz: ")
+                    .withStyle(ChatFormatting.YELLOW)
+                    .append(e.emoji())
+                    .append(Component.literal(" " + e.pl).withStyle(ChatFormatting.YELLOW)));
         }
     }
 

@@ -1,0 +1,4 @@
+Grafiki emoji: Twemoji
+https://github.com/jdecked/twemoji
+Licencja: CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+Copyright 2020 Twitter, Inc and other contributors.

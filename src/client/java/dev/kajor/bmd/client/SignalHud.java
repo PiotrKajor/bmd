@@ -90,7 +90,8 @@ public class SignalHud implements HudElement {
     }
 
     private void drawEmote(GuiGraphicsExtractor gfx, Minecraft mc, int x, int y, Emote emote) {
-        Component label = Component.literal(emote.symbol + " " + emote.pl).withStyle(ChatFormatting.WHITE);
+        Component label = Component.empty().append(emote.emoji())
+                .append(Component.literal(" " + emote.pl).withStyle(ChatFormatting.WHITE));
         int w = Math.max(mc.font.width(label) + 24, 40);
         gfx.fill(x - w / 2, y - 22, x + w / 2, y - 2, BUBBLE_BG);
         gfx.item(new ItemStack(emote.icon), x - w / 2 + 2, y - 20);

@@ -1,6 +1,10 @@
 package dev.kajor.bmd;
 
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.DyeColor;
@@ -52,6 +56,22 @@ public enum Emote {
         this.icon = icon;
         this.sound = sound;
         this.pitch = pitch;
+    }
+
+    /** Wlasny font moda z prawdziwymi emoji - patrz tools/build_emoji_font.py. */
+    private static final FontDescription EMOJI_FONT =
+            new FontDescription.Resource(Identifier.fromNamespaceAndPath(BmdMod.MOD_ID, "emoji"));
+    /** Glify siedza w Private Use Area, po kolei od U+E000 - indeks gestu daje znak. */
+    private static final int PUA_START = 0xE000;
+
+    /**
+     * Emoji jako gotowy Component. Znak sam w sobie nic nie znaczy - dopiero
+     * przypisany font moda zamienia go na obrazek. Klient bez moda zobaczylby
+     * pusty kwadrat, ale takiego serwer i tak nie wpuszcza (ModCheck).
+     */
+    public Component emoji() {
+        return Component.literal(String.valueOf((char) (PUA_START + ordinal())))
+                .withStyle(Style.EMPTY.withFont(EMOJI_FONT));
     }
 
     public static Emote byId(int id) {

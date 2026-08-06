@@ -1,0 +1,16 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "bmd:font/emoji.png",
+      "height": 10,
+      "ascent": 8,
+      "chars": [
+        "",
+        "",
+        "",
+        "\u0000"
+      ]
+    }
+  ]
+}
