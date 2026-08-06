@@ -4,10 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import pl.skynetgames.bmd.Emote;
 import pl.skynetgames.bmd.Sense;
 import pl.skynetgames.bmd.client.ClientState;
+import pl.skynetgames.bmd.client.ItemIcon;
 import pl.skynetgames.bmd.net.BmdPayloads;
 
 /**
@@ -77,14 +75,9 @@ public class MixinEntityRenderer {
         Item item = BuiltInRegistries.ITEM.getValue(id);
         if (item == Items.AIR) return Component.empty();
 
-        // Ikona przedmiotu jako glif ze sprite'a atlasu - dziala dla przedmiotow
-        // z plaska tekstura (item/...). Bloki maja model 3D i sprite'a nie maja,
-        // dlatego nazwa zostaje obok jako pewne zrodlo informacji.
-        Component icon = Component.literal(" ").withStyle(Style.EMPTY.withFont(
-                new FontDescription.AtlasSprite(TextureAtlas.LOCATION_ITEMS,
-                        Identifier.fromNamespaceAndPath(id.getNamespace(), "item/" + id.getPath()))));
-
-        return Component.empty().append(icon).append(Component.literal(" "))
+        // ItemIcon szuka sprite'a w atlasie przedmiotow, a dla blokow w atlasie
+        // blokow. Nazwa zostaje obok - jest pewna nawet, gdy ikony nie ma.
+        return Component.empty().append(ItemIcon.of(id)).append(Component.literal(" "))
                 .append(new ItemStack(item).getHoverName().copy().withStyle(ChatFormatting.AQUA));
     }
 }
