@@ -8,7 +8,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import dev.kajor.bmd.Emote;
 import dev.kajor.bmd.Geometry;
 
@@ -66,10 +65,11 @@ public class EmoteWheel extends Screen {
             int y = (int) (cy - Math.cos(angle) * radius);
             boolean active = i == hovered;
 
-            int half = active ? 26 : 20;
+            // Samo emoji - ikona przedmiotu byla druga nazwa tego samego i tylko
+            // zabierala miejsce, odkad gesty maja wlasne obrazki.
+            int half = active ? 20 : 16;
             gfx.fill(x - half, y - half, x + half, y + half, active ? 0xCC3A6EA5 : 0x99202020);
-            gfx.item(new ItemStack(emotes[i].icon), x - 8, y - 12);
-            gfx.centeredText(font, emotes[i].emoji(), x, y + 6, 0xFFFFFFFF);
+            gfx.centeredText(font, emotes[i].emoji(), x, y - 4, 0xFFFFFFFF);
         }
 
         Component center = hovered >= 0

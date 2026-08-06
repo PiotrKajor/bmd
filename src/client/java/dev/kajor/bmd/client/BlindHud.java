@@ -5,7 +5,11 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.Camera;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import dev.kajor.bmd.BlindMode;
+import dev.kajor.bmd.Geometry;
 import dev.kajor.bmd.Sense;
 
 /**
@@ -65,13 +69,26 @@ public class BlindHud implements HudElement {
      * ▼ pod toba. Swieze echo jest jasne i ma wokol siebie poswiate, ktora gasnie;
      * dzieki temu widac, ktory dzwiek byl przed chwila, a ktory juz cichnie.
      */
+    /**
+     * Znacznik ladu je tam, gdzie naprawde jest zrodlo dzwieku - ta sama projekcja,
+     * ktorej uzywaja nametagi. Dzieki temu slepy slyszy krok i widzi punkt dokladnie
+     * w tym miejscu przestrzeni, a nie na obreczy wokol celownika.
+     *
+     * Dzwiek za plecami nie ma gdzie wyladowac, wiec laduje na krawedzi ekranu
+     * w swoim kierunku - inaczej zniknalby zupelnie.
+     *
+     * Ksztalt niesie pion: ▲ nad toba, ● na twoim poziomie, ▼ pod toba.
+     */
     private void drawEchoes(GuiGraphicsExtractor gfx, Minecraft mc, int w, int h) {
+        Camera camera = mc.gameRenderer.mainCamera();
+        if (!camera.isInitialized() || camera.entity() == null) return;
+
         long now = System.currentTimeMillis();
-        double radius = Math.min(w, h) * 0.38D;
+        Vec3 eye = camera.position();
+        Entity view = camera.entity();
         double px = mc.player.getX();
         double py = mc.player.getY();
         double pz = mc.player.getZ();
-        float yaw = mc.player.getYRot();
 
         synchronized (ClientState.ECHOES) {
             for (ClientState.Echo echo : ClientState.ECHOES) {
@@ -84,26 +101,29 @@ public class BlindHud implements HudElement {
                 double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
                 if (dist > ClientState.echoRange) continue;
 
-                double angleToSound = Math.toDegrees(Math.atan2(-dx, dz));
-                double rel = Math.toRadians(angleToSound - yaw);
-
                 float fade = (float) left / ECHO_LIFETIME_MS;
                 float near = (float) (1.0D - Math.min(1.0D, dist / ClientState.echoRange));
-
-                // Blizsze dzwieki siadaja blizej srodka - promien niesie odleglosc,
-                // wiec nie trzeba jej zgadywac z samej jasnosci.
-                double r = radius * (0.45D + 0.55D * (1.0D - near));
-                int x = (int) (w / 2 + Math.sin(rel) * r);
-                int y = (int) (h / 2 - Math.cos(rel) * r);
-
                 int alpha = (int) (255 * Math.min(1.0F, fade * (0.45F + 0.55F * near)));
                 if (alpha < 16) continue;
+
+                int[] p = Geometry.project(eye.x, eye.y, eye.z, view.getYRot(), view.getXRot(),
+                        camera.getFov(), w, h, echo.x(), echo.y(), echo.z(), ClientState.echoRange + 1);
+
+                int x, y;
+                if (p != null) {
+                    x = Math.clamp(p[0], 8, w - 8);
+                    y = Math.clamp(p[1], 8, h - 8);
+                } else {
+                    // poza kadrem: kierunek w poziomie, znacznik na obrzezu ekranu
+                    double angle = Math.toRadians(Math.toDegrees(Math.atan2(-dx, dz)) - mc.player.getYRot());
+                    double r = Math.min(w, h) * 0.44D;
+                    x = (int) Math.clamp(w / 2 + Math.sin(angle) * r, 8, w - 8);
+                    y = (int) Math.clamp(h / 2 - Math.cos(angle) * r, 8, h - 8);
+                }
 
                 String glyph = dy > 1.5D ? "▲" : (dy < -1.5D ? "▼" : "●");
                 int rgb = dy > 1.5D ? 0x9CD2FF : (dy < -1.5D ? 0xFFC48C : 0xFFFFFF);
 
-                // Poswiata: ta sama ikona pod spodem, ciemniejsza i lekko przesunieta,
-                // daje wrazenie rozchodzacej sie fali bez rysowania osobnego okregu.
                 int halo = (int) (alpha * 0.35F);
                 if (halo > 12) {
                     gfx.centeredText(mc.font, Component.literal(glyph), x, y - 1, (halo << 24) | rgb);

@@ -155,8 +155,9 @@ public final class BmdCommand {
         for (Map.Entry<UUID, Sense> e : all.entrySet()) {
             ServerPlayer p = source.getServer().getPlayerList().getPlayer(e.getKey());
             String name = p != null ? p.getGameProfile().name() : e.getKey().toString();
-            Component line = Component.literal(" " + e.getValue().icon + " ").withStyle(e.getValue().color)
-                    .append(Component.literal(name + " - " + e.getValue().pl).withStyle(ChatFormatting.WHITE));
+            Component line = Component.literal(" ").append(e.getValue().emoji())
+                    .append(Component.literal(" " + name + " - " + e.getValue().pl)
+                            .withStyle(e.getValue().color));
             source.sendSuccess(() -> line, false);
         }
         return all.size();

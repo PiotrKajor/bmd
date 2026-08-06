@@ -24,11 +24,14 @@ EMOJI = [
     ("HELP", "1f198"), ("DANGER", "26a0"), ("ENEMY", "2694"), ("DYING", "1f480"),
     ("FOLLOW", "1f449"), ("WAIT", "23f3"), ("HERE", "1f4cd"), ("HOME", "1f3e0"),
     ("HELLO", "1f44b"), ("CLAP", "1f44f"), ("RUDE", "1f595"),
+    # Klasy - trzy malpki pasuja doslownie: nie widze / nie mowie / nie slysze.
+    # Musza byc PO gestach, bo indeks gestu wyznacza jego glif.
+    ("SENSE_BLIND", "1f648"), ("SENSE_MUTE", "1f64a"), ("SENSE_DEAF", "1f649"),
 ]
 
 CDN = "https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/"
 CELL = 32          # rozmiar glifu w atlasie
-COLS = 4           # 4x4 = 16 miejsc, mamy 15 glifow
+COLS = 6           # 6 kolumn: 18 miejsc na 18 glifow
 PUA_START = 0xE000
 # MC oznacza puste miejsca w siatce znakiem U+0000
 EMPTY_GLYPH = "\u0000"

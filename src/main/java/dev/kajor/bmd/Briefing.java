@@ -18,8 +18,7 @@ public final class Briefing {
         List<Component> out = new ArrayList<>();
 
         out.add(Component.literal("═══════════════════════════════").withStyle(ChatFormatting.DARK_GRAY));
-        out.add(Component.literal("  " + sense.icon + " ")
-                .withStyle(sense.color)
+        out.add(Component.literal("  ").append(sense.emoji()).append(Component.literal(" "))
                 .append(Component.literal(sense.pl.toUpperCase()).withStyle(sense.color, ChatFormatting.BOLD)));
         out.add(Component.empty());
 
