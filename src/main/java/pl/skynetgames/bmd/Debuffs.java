@@ -33,7 +33,7 @@ public final class Debuffs {
 
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
             if (BmdConfig.get().muteCannotChat && BmdState.get(sender) == Sense.MUTE) {
-                warn(sender, "Niemy nie pisze. Uzyj kola gestow [G].");
+                warn(sender, "Niemy nie pisze. Uzyj kola gestow [LCtrl].");
                 return false;
             }
             return true;
@@ -43,7 +43,7 @@ public final class Debuffs {
         ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register((message, source, params) -> {
             if (!BmdConfig.get().muteCannotChat) return true;
             if (source.getEntity() instanceof ServerPlayer p && BmdState.get(p) == Sense.MUTE) {
-                warn(p, "Niemy nie pisze. Uzyj kola gestow [G].");
+                warn(p, "Niemy nie pisze. Uzyj kola gestow [LCtrl].");
                 return false;
             }
             return true;

@@ -44,7 +44,7 @@ PACK_ICON = Path(__file__).parent / "pack" / "icon.png"
 OUT = Path(__file__).parent / "build" / f"BlindMuteDeaf-{MC_VERSION}.mrpack"
 
 # Wersja paczki i katalog strony - uzywane przy --publish
-PACK_VERSION = "1.2.0"
+PACK_VERSION = "1.2.1"
 WWW_DIR = Path("/var/www/skynetgames.org/html/download")
 
 API = "https://api.modrinth.com/v2"
