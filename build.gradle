@@ -33,8 +33,9 @@ dependencies {
     // API Simple Voice Chat - tylko compile-time, w runtime dostarcza je sam mod SVC
     compileOnly "de.maxhenkel.voicechat:voicechat-api:${project.voicechat_api_version}"
 
-    // tylko do uruchomienia dev - zeby dalo sie sprawdzic, czy plugin SVC sie wpina
-    modLocalRuntime files('libs/voicechat-2.6.21+26.2.jar')
+    // Opcjonalnie do runServer: wrzuc jar Simple Voice Chat do libs/, a wtedy
+    // dev-serwer wystartuje z SVC i widac, czy plugin glosowy sie wpina.
+    fileTree(dir: 'libs', include: '*.jar').each { runtimeOnly files(it) }
 }
 
 processResources {
