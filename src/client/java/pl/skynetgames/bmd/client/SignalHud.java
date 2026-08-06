@@ -19,7 +19,9 @@ import pl.skynetgames.bmd.Geometry;
 import pl.skynetgames.bmd.Sense;
 import pl.skynetgames.bmd.net.BmdPayloads;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,6 +35,9 @@ public class SignalHud implements HudElement {
 
     private static final int BUBBLE_BG = 0xB0000000;
     private static final double MAX_DIST = 48.0D;
+    private static final int ICON = 16;
+    private static final int GAP = 3;
+    private static final int PAD = 3;
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor gfx, DeltaTracker delta) {
@@ -51,9 +56,20 @@ public class SignalHud implements HudElement {
         // Siebie rysujemy tylko w widoku z trzeciej osoby - w pierwszej wlasna glowa
         // jest praktycznie w kamerze i babelek nie mialby sie gdzie zmiescic.
         boolean firstPerson = mc.options.getCameraType().isFirstPerson();
+        Vec3 eye = camera.position();
+
+        // Od najdalszego do najblizszego: przy dwoch graczach jeden za drugim
+        // babelek blizszego ma byc na wierzchu, a nie pod spodem.
+        List<AbstractClientPlayer> visible = new ArrayList<>();
         for (AbstractClientPlayer player : mc.level.players()) {
             if (player.isInvisible()) continue;
             if (player == mc.player && firstPerson) continue;
+            visible.add(player);
+        }
+        visible.sort(Comparator.comparingDouble(
+                (AbstractClientPlayer p) -> p.position().distanceToSqr(eye)).reversed());
+
+        for (AbstractClientPlayer player : visible) {
             drawFor(gfx, mc, camera, player, now);
         }
     }
@@ -78,7 +94,8 @@ public class SignalHud implements HudElement {
             } else {
                 drawItemSign(gfx, mc, x, y, signal.itemId());
             }
-            y += 22;
+            // Babelek zajmuje pas nad punktem y - etykieta klasy schodzi pod niego.
+            y += 4;
         }
 
         if (sense != Sense.NONE) {
@@ -90,25 +107,43 @@ public class SignalHud implements HudElement {
     }
 
     private void drawEmote(GuiGraphicsExtractor gfx, Minecraft mc, int x, int y, Emote emote) {
-        Component label = Component.empty().append(emote.emoji())
-                .append(Component.literal(" " + emote.pl).withStyle(ChatFormatting.WHITE));
-        int w = Math.max(mc.font.width(label) + 24, 40);
-        gfx.fill(x - w / 2, y - 22, x + w / 2, y - 2, BUBBLE_BG);
-        gfx.item(new ItemStack(emote.icon), x - w / 2 + 2, y - 20);
-        gfx.text(mc.font, label, x - w / 2 + 21, y - 15, 0xFFFFFFFF);
+        drawBubble(gfx, mc, x, y, new ItemStack(emote.icon),
+                Component.empty().append(emote.emoji())
+                        .append(Component.literal(" " + emote.pl).withStyle(ChatFormatting.WHITE)));
     }
 
-    private void drawItemSign(GuiGraphicsExtractor gfx, Minecraft mc, int x, int y, net.minecraft.resources.Identifier itemId) {
+    private void drawItemSign(GuiGraphicsExtractor gfx, Minecraft mc, int x, int y,
+                              net.minecraft.resources.Identifier itemId) {
         if (itemId == null || itemId.equals(BmdPayloads.NO_ITEM)) return;
         Item item = BuiltInRegistries.ITEM.getValue(itemId);
         if (item == Items.AIR) return;
-
         ItemStack stack = new ItemStack(item);
-        Component label = stack.getHoverName();
-        int w = Math.max(mc.font.width(label) + 24, 40);
-        gfx.fill(x - w / 2, y - 22, x + w / 2, y - 2, BUBBLE_BG);
-        gfx.item(stack, x - w / 2 + 2, y - 20);
-        gfx.text(mc.font, label, x - w / 2 + 21, y - 15, 0xFFFFFFFF);
+        drawBubble(gfx, mc, x, y, stack, stack.getHoverName());
+    }
+
+    /**
+     * Jeden babelek: ikona przedmiotu po lewej, podpis po prawej, tlo dopasowane
+     * do obu. Wysokosc bierze sie z ikony (16 px) i wysokosci wiersza tekstu -
+     * wczesniej byla wpisana na sztywno i emoji z wlasnego fontu (wyzsze niz
+     * zwykla litera) wychodzilo poza tlo.
+     */
+    private void drawBubble(GuiGraphicsExtractor gfx, Minecraft mc, int x, int y,
+                            ItemStack icon, Component label) {
+        int textW = mc.font.width(label);
+        int inner = ICON + GAP + textW;
+        int w = inner + PAD * 2;
+        int h = Math.max(ICON, mc.font.lineHeight) + PAD * 2;
+
+        int left = x - w / 2;
+        int top = y - h;
+
+        gfx.fill(left, top, left + w, top + h, BUBBLE_BG);
+
+        // Ikona i tekst wysrodkowane w pionie wzgledem siebie, nie wzgledem tla.
+        int iconY = top + (h - ICON) / 2;
+        int textY = top + (h - mc.font.lineHeight) / 2 + 1;
+        gfx.item(icon, left + PAD, iconY);
+        gfx.text(mc.font, label, left + PAD + ICON + GAP, textY, 0xFFFFFFFF);
     }
 
     private static int[] project(Camera camera, int guiW, int guiH, Vec3 target) {

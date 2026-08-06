@@ -41,6 +41,9 @@ public class BmdConfig {
     /** Czy niemy moze wystawic nad glowa dowolny przedmiot jako komunikat. */
     public boolean muteItemSign = true;
 
+    /** Craftowac moze tylko slepy - pozostali musza mu przynosic surowce. */
+    public boolean onlyBlindCanCraft = true;
+
     /** Wyrzucac graczy bez moda po stronie klienta. Patrz ModCheck - bez moda tryb jest do polowy fikcja. */
     public boolean requireClientMod = true;
 
