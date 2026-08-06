@@ -33,7 +33,12 @@ public enum Emote {
     FOLLOW("Za mna", "➜", Items.COMPASS, SoundEvents.NOTE_BLOCK_FLUTE, 1.2F),
     WAIT("Czekaj", "⌛", Items.CLOCK, SoundEvents.NOTE_BLOCK_HAT, 1.0F),
     HERE("Tutaj", "⚑", Items.TORCH, SoundEvents.NOTE_BLOCK_BELL, 1.0F),
-    HOME("Do bazy", "⌂", Items.BED.pick(DyeColor.RED), SoundEvents.NOTE_BLOCK_FLUTE, 0.8F);
+    HOME("Do bazy", "⌂", Items.BED.pick(DyeColor.RED), SoundEvents.NOTE_BLOCK_FLUTE, 0.8F),
+
+    // --- towarzyskie ---
+    HELLO("Czesc!", "✋", Items.SUNFLOWER, SoundEvents.NOTE_BLOCK_CHIME, 1.5F),
+    CLAP("Brawo!", "✷", Items.FIREWORK_ROCKET, SoundEvents.NOTE_BLOCK_BANJO, 1.3F),
+    RUDE("Spadaj!", "☝", Items.POISONOUS_POTATO, SoundEvents.NOTE_BLOCK_DIDGERIDOO, 1.8F);
 
     public final String pl;
     public final String symbol;

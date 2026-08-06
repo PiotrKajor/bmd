@@ -79,10 +79,16 @@ public final class Geometry {
         check(sector(0, 50, 8, 20) == 4, "dol = sektor 4");
         check(sector(-50, 0, 8, 20) == 6, "lewo = sektor 6");
         check(sector(5, 5, 8, 20) == -1, "strefa martwa");
-        for (int i = 0; i < 8; i++) {
-            double a = sectorAngle(i, 8);
-            int got = sector(Math.sin(a) * 50, -Math.cos(a) * 50, 8, 20);
-            check(got == i, "ikona sektora " + i + " trafia w swoj sektor (dostalem " + got + ")");
+
+        // Kolo miewa rozna liczbe gestow - kazda ikona musi trafiac we wlasny sektor,
+        // inaczej klikniecie w ikone wysyla sasiedni gest.
+        for (int count : new int[]{4, 8, 12, 15, 16}) {
+            for (int i = 0; i < count; i++) {
+                double a = sectorAngle(i, count);
+                int got = sector(Math.sin(a) * 50, -Math.cos(a) * 50, count, 20);
+                check(got == i, "przy " + count + " sektorach ikona " + i
+                        + " trafia w swoj sektor (dostalem " + got + ")");
+            }
         }
 
         // Projekcja: cel dokladnie na wprost ladu je w srodku ekranu.

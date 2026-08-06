@@ -59,7 +59,7 @@ public final class Briefing {
                 if (c.muteHalfDamage) out.add(cannot("Zadajesz o polowe mniejsze obrazenia"));
                 if (c.muteCannotOpenContainers) out.add(cannot("Nie otwierasz skrzyn ani piecow"));
                 out.add(can("Widzisz i slyszysz wszystko - jestes oczami druzyny"));
-                out.add(can("Kolo gestow [LCtrl] - 12 znakow z dzwiekiem, widoczne nad glowa"));
+                out.add(can("Kolo gestow [LCtrl] - 15 znakow z dzwiekiem, widoczne nad glowa"));
                 if (c.muteItemSign) {
                     out.add(can("Tabliczka z przedmiotem [LAlt] - wybierz dowolny przedmiot z gry,"));
                     out.add(can("  zawisnie nad twoja glowa na 10 sekund"));
