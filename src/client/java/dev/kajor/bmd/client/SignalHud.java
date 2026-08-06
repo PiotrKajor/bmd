@@ -48,8 +48,12 @@ public class SignalHud implements HudElement {
         long now = System.currentTimeMillis();
         ClientState.SIGNALS.entrySet().removeIf(e -> e.getValue().expiresAt() < now);
 
+        // Siebie rysujemy tylko w widoku z trzeciej osoby - w pierwszej wlasna glowa
+        // jest praktycznie w kamerze i babelek nie mialby sie gdzie zmiescic.
+        boolean firstPerson = mc.options.getCameraType().isFirstPerson();
         for (AbstractClientPlayer player : mc.level.players()) {
-            if (player == mc.player || player.isInvisible()) continue;
+            if (player.isInvisible()) continue;
+            if (player == mc.player && firstPerson) continue;
             drawFor(gfx, mc, camera, player, now);
         }
     }

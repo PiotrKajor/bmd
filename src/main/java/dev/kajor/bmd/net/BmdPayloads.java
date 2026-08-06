@@ -25,7 +25,8 @@ public final class BmdPayloads {
      * i czy leci tryb hard. Wysylane w calosci przy kazdej zmianie - lista graczy
      * na jednym serwerze jest mala, delty nie sa tego warte.
      */
-    public record Roster(Map<UUID, Sense> senses, Sense mine, boolean hardMode, double echoRange) implements CustomPacketPayload {
+    public record Roster(Map<UUID, Sense> senses, Sense mine, boolean hardMode, double echoRange,
+                         boolean showHud) implements CustomPacketPayload {
         public static final Type<Roster> TYPE =
                 new Type<>(Identifier.fromNamespaceAndPath(BmdMod.MOD_ID, "roster"));
 
@@ -39,6 +40,7 @@ public final class BmdPayloads {
                     buf.writeVarInt(v.mine.ordinal());
                     buf.writeBoolean(v.hardMode);
                     buf.writeDouble(v.echoRange);
+                    buf.writeBoolean(v.showHud);
                 },
                 buf -> {
                     int n = buf.readVarInt();
@@ -46,7 +48,7 @@ public final class BmdPayloads {
                     for (int i = 0; i < n; i++) {
                         map.put(buf.readUUID(), readSense(buf));
                     }
-                    return new Roster(map, readSense(buf), buf.readBoolean(), buf.readDouble());
+                    return new Roster(map, readSense(buf), buf.readBoolean(), buf.readDouble(), buf.readBoolean());
                 });
 
         @Override

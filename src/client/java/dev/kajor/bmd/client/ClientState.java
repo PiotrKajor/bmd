@@ -14,6 +14,8 @@ public final class ClientState {
     public static boolean hardMode = false;
     /** Zasieg echolokacji - przychodzi z serwera, zeby klient nie zgadywal. */
     public static double echoRange = 24.0D;
+    /** Czy czern ma isc pod HUD (hotbar i paski widoczne). */
+    public static boolean showHud = false;
     public static final Map<UUID, Sense> ROSTER = new HashMap<>();
 
     /** Sygnaly wiszace nad glowami: gracz -> co i do kiedy. */
@@ -35,6 +37,7 @@ public final class ClientState {
     public static void reset() {
         mine = Sense.NONE;
         hardMode = false;
+        showHud = false;
         ROSTER.clear();
         SIGNALS.clear();
         ECHOES.clear();

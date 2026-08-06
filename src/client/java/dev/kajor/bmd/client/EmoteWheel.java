@@ -22,6 +22,8 @@ public class EmoteWheel extends Screen {
 
     private final KeyMapping heldKey;
     private int hovered = -1;
+    /** Czy klawisz byl trzymany po otwarciu kola - patrz nizej. */
+    private boolean keyHeldSinceOpen = false;
 
     public EmoteWheel(KeyMapping heldKey) {
         super(Component.literal("Kolo gestow"));
@@ -35,11 +37,18 @@ public class EmoteWheel extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {
-        // Klawisz puszczony = wybor zatwierdzony. Trzymanie i puszczanie jest szybsze
-        // niz klikanie, a przy tej mechanice liczy sie kazda sekunda.
-        if (heldKey != null && !heldKey.isDown()) {
-            confirm();
-            return;
+        // Dwa sposoby uzycia, bo krotkie tapniecie klawisza i trzymanie to co innego:
+        //  - trzymasz G, celujesz, puszczasz -> wybor zatwierdzony puszczeniem
+        //  - tapnales G -> kolo zostaje otwarte, wybierasz kliknieciem (ESC anuluje)
+        // Bez flagi kolo zamykalo sie w pierwszej klatce po tapnieciu (isDown juz false)
+        // i wygladalo, jakby klawisz w ogole nie dzialal.
+        if (heldKey != null) {
+            if (heldKey.isDown()) {
+                keyHeldSinceOpen = true;
+            } else if (keyHeldSinceOpen) {
+                confirm();
+                return;
+            }
         }
 
         int cx = gfx.guiWidth() / 2;
