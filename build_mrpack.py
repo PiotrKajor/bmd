@@ -5,7 +5,8 @@ Baza to Fabulously Optimized (wydajnosc + sensowne domyslne ustawienia), do tego
 mody komunikacyjne i sam mod BMD. Mod BMD nie jest na Modrinth, wiec leci
 w overrides/ jako plik - reszta jako wpisy z URL-em, zeby launcher pobral je sam.
 
-    python3 build_mrpack.py
+    python3 build_mrpack.py              # tylko zbuduj
+    python3 build_mrpack.py --publish    # zbuduj i wystaw na strone
 """
 
 import hashlib
@@ -13,6 +14,7 @@ import json
 import shutil
 import sys
 import tempfile
+import urllib.parse
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -37,6 +39,10 @@ BMD_JAR = Path(__file__).parent / "build" / "libs" / "bmd-1.0.0.jar"
 # nie ma pola na ikone.
 PACK_ICON = Path(__file__).parent / "pack" / "icon.png"
 OUT = Path(__file__).parent / "build" / f"BlindMuteDeaf-{MC_VERSION}.mrpack"
+
+# Wersja paczki i katalog strony - uzywane przy --publish
+PACK_VERSION = "1.0.0"
+WWW_DIR = Path("/var/www/skynetgames.org/html/download")
 
 API = "https://api.modrinth.com/v2"
 
@@ -133,6 +139,19 @@ def main():
         print(f"\ngotowe: {OUT}")
         print(f"  modow w indeksie: {len(index['files'])}  (+1 w overrides)")
         print(f"  rozmiar: {OUT.stat().st_size / 1024:.0f} KB   sha1: {sha[:16]}...")
+
+        # Strona sama znajduje najnowszy plik pasujacy do "Blind Mute Deaf",
+        # wiec wystarczy tu skopiowac - index.php nie wymaga zmian przy nowej wersji.
+        if "--publish" in sys.argv:
+            target = WWW_DIR / f"Blind Mute Deaf [Fabric] {PACK_VERSION}.mrpack"
+            if not WWW_DIR.is_dir():
+                print(f"  ! brak {WWW_DIR} - pomijam publikacje")
+            else:
+                shutil.copy(OUT, target)
+                target.chmod(0o644)
+                print(f"\nopublikowano: {target}")
+                print("  https://skynetgames.org/download/"
+                      + urllib.parse.quote(target.name))
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
