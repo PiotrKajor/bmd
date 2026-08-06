@@ -28,7 +28,8 @@ public final class BlindEffects {
             if (++counter < REFRESH_TICKS) return;
             counter = 0;
 
-            boolean easy = BlindMode.byName(BmdConfig.get().blindMode) == BlindMode.EASY;
+            boolean easy = BmdState.effectsActive()
+                    && BlindMode.byName(BmdConfig.get().blindMode) == BlindMode.EASY;
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 if (BmdState.get(player) != Sense.BLIND) continue;
 

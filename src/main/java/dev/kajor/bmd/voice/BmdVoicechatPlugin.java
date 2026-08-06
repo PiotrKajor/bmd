@@ -55,6 +55,8 @@ public class BmdVoicechatPlugin implements VoicechatPlugin {
     }
 
     private static Sense senseOf(VoicechatConnection connection) {
+        // Po ukonczeniu wyzwania glos wraca wszystkim.
+        if (!BmdState.effectsActive()) return Sense.NONE;
         if (connection == null || connection.getPlayer() == null) return Sense.NONE;
         UUID uuid = connection.getPlayer().getUuid();
         return uuid == null ? Sense.NONE : BmdState.get(uuid);

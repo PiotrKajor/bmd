@@ -9,6 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -84,12 +85,19 @@ public final class GoalTracker {
     private static void complete(MinecraftServer server, ServerPlayer by) {
         if (server == null || !GoalState.isRunning()) return;
         GoalState.finish(by.getUUID());
+        // bez tego klient nie wie, ze wyzwanie padlo, i dalej rysuje czern
+        dev.kajor.bmd.BmdSync.broadcastGoal(server);
 
         Goal goal = GoalState.goal();
         Component time = Component.literal(formatTime(GoalState.elapsedMs()))
                 .withStyle(ChatFormatting.GOLD);
 
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+            // Efekty gasna z chwila ukonczenia - zdejmujemy je od razu, zamiast
+            // czekac, az same wygasna (odnawiane sa co sekunde).
+            p.removeEffect(MobEffects.BLINDNESS);
+            p.removeEffect(MobEffects.DARKNESS);
+
             p.sendSystemMessage(Component.empty());
             p.sendSystemMessage(Component.translatable("bmd.goal.done")
                     .withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD));
@@ -97,6 +105,8 @@ public final class GoalTracker {
                     .withStyle(ChatFormatting.WHITE));
             p.sendSystemMessage(Component.translatable("bmd.goal.done_by",
                     Component.literal(by.getGameProfile().name()).withStyle(ChatFormatting.YELLOW), time));
+            p.sendSystemMessage(Component.translatable("bmd.goal.effects_off")
+                    .withStyle(ChatFormatting.AQUA));
             p.sendSystemMessage(Component.empty());
             p.level().playSound(null, p.getX(), p.getY(), p.getZ(),
                     SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1.0F, 1.0F);

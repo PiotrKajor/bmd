@@ -53,6 +53,7 @@
   "bmd.goal.cleared": "Challenge cancelled.",
   "bmd.goal.unknown": "No such goal.",
   "bmd.goal.progress": "Progress: %s / %s",
+  "bmd.goal.effects_off": "Everyone's senses are back - the challenge is over.",
   "bmd.goal.time": "Time: %s",
   "bmd.goal.difficulty.easy": "Difficulty: easy",
   "bmd.goal.difficulty.normal": "Difficulty: normal",

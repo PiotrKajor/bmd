@@ -39,6 +39,14 @@ public final class ClientState {
     public record Echo(double x, double y, double z, long bornAt, long expiresAt) {
     }
 
+    /**
+     * Czy ograniczenia maja dzialac - odpowiednik BmdState.effectsActive() na serwerze.
+     * Nie potrzebuje osobnego pola: ukonczone wyzwanie ma ustawiony czas koncowy.
+     */
+    public static boolean effectsActive() {
+        return goalFinishedMs == 0L;
+    }
+
     public static Sense senseOf(UUID player) {
         return ROSTER.getOrDefault(player, Sense.NONE);
     }

@@ -20,13 +20,13 @@ public final class Debuffs {
         // Blokada obrazen siedzi na ALLOW_DAMAGE, a nie na samym kliknieciu w moba -
         // dzieki temu lapie tez strzaly, trident i wszystko inne, co gracz wyprodukuje.
         ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
-            if (!BmdConfig.get().muteCannotAttack) return true;
+            if (!BmdState.effectsActive() || !BmdConfig.get().muteCannotAttack) return true;
             return !(source.getEntity() instanceof ServerPlayer attacker && BmdState.get(attacker) == Sense.MUTE);
         });
 
         // Sam ALLOW_DAMAGE nie da graczowi feedbacku - to jest tylko po to, zeby wiedzial dlaczego.
         AttackEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {
-            if (BmdConfig.get().muteCannotAttack && sense(player) == Sense.MUTE) {
+            if (BmdState.effectsActive() && BmdConfig.get().muteCannotAttack && sense(player) == Sense.MUTE) {
                 warn(player, "bmd.warn.mute_no_attack");
                 return InteractionResult.FAIL;
             }
@@ -34,7 +34,7 @@ public final class Debuffs {
         });
 
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
-            if (BmdConfig.get().muteCannotChat && BmdState.get(sender) == Sense.MUTE) {
+            if (BmdState.effectsActive() && BmdConfig.get().muteCannotChat && BmdState.get(sender) == Sense.MUTE) {
                 warn(sender, "bmd.warn.mute_no_chat");
                 return false;
             }
@@ -43,7 +43,7 @@ public final class Debuffs {
 
         // /msg, /me, /say - inaczej mute obchodzi sie czatem w piec sekund
         ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register((message, source, params) -> {
-            if (!BmdConfig.get().muteCannotChat) return true;
+            if (!BmdState.effectsActive() || !BmdConfig.get().muteCannotChat) return true;
             if (source.getEntity() instanceof ServerPlayer p && BmdState.get(p) == Sense.MUTE) {
                 warn(p, "bmd.warn.mute_no_chat");
                 return false;
@@ -52,7 +52,7 @@ public final class Debuffs {
         });
 
         UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
-            if (BmdConfig.get().deafCannotUseItems && sense(player) == Sense.DEAF) {
+            if (BmdState.effectsActive() && BmdConfig.get().deafCannotUseItems && sense(player) == Sense.DEAF) {
                 warn(player, "bmd.warn.deaf_no_place");
                 return InteractionResult.FAIL;
             }
@@ -60,7 +60,7 @@ public final class Debuffs {
         });
 
         UseItemCallback.EVENT.register((player, level, hand) -> {
-            if (BmdConfig.get().deafCannotUseItems && sense(player) == Sense.DEAF) {
+            if (BmdState.effectsActive() && BmdConfig.get().deafCannotUseItems && sense(player) == Sense.DEAF) {
                 // Glod nie jest czescia kary - blokada PPM nie moze oznaczac smierci glodowej.
                 if (isFood(player.getItemInHand(hand))) return InteractionResult.PASS;
                 warn(player, "bmd.warn.deaf_no_use");

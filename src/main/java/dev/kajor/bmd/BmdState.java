@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.LevelResource;
+import dev.kajor.bmd.goal.GoalState;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -51,6 +52,17 @@ public class BmdState {
         } catch (IOException e) {
             BmdMod.LOG.error("Nie udalo sie zapisac stanu BMD", e);
         }
+    }
+
+    /**
+     * Czy ograniczenia klas maja dzialac.
+     *
+     * Po ukonczeniu wyzwania gasna wszystkie naraz - slepy widzi, gluchy slyszy,
+     * niemy mowi. Klasy zostaja zapisane (widac je w /bmd list i nad glowami),
+     * ale nic juz nie blokuja: wyzwanie sie skonczylo, wiec kara tez.
+     */
+    public static boolean effectsActive() {
+        return !GoalState.isFinished();
     }
 
     public static Sense get(UUID player) {

@@ -27,11 +27,12 @@ public class MixinSoundManager {
     @Inject(method = "play(Lnet/minecraft/client/resources/sounds/SoundInstance;)Lnet/minecraft/client/sounds/SoundEngine$PlayResult;",
             at = @At("HEAD"), cancellable = true)
     private void bmd$filterSound(SoundInstance sound, CallbackInfoReturnable<SoundEngine.PlayResult> cir) {
-        if (ClientState.mine == Sense.DEAF) {
+        if (ClientState.mine == Sense.DEAF && ClientState.effectsActive()) {
             cir.setReturnValue(SoundEngine.PlayResult.NOT_STARTED);
             return;
         }
-        if (ClientState.mine == Sense.BLIND && ClientState.blindMode == BlindMode.NORMAL) {
+        if (ClientState.mine == Sense.BLIND && ClientState.effectsActive()
+                && ClientState.blindMode == BlindMode.NORMAL) {
             Echolocation.onSound(sound);
         }
     }
@@ -39,7 +40,7 @@ public class MixinSoundManager {
     /** Druga droga do glosnika - bez tego opoznione dzwieki przeciekaja gluchemu. */
     @Inject(method = "playDelayed", at = @At("HEAD"), cancellable = true)
     private void bmd$filterDelayedSound(SoundInstance sound, int delay, CallbackInfo ci) {
-        if (ClientState.mine == Sense.DEAF) {
+        if (ClientState.mine == Sense.DEAF && ClientState.effectsActive()) {
             ci.cancel();
         }
     }
