@@ -31,34 +31,35 @@ public final class BmdCommand {
                 .executes(ctx -> info(ctx))
                 .then(Commands.literal("info").executes(BmdCommand::info))
 
-                .then(Commands.literal("losuj")
+                .then(Commands.literal("random")
                         .requires(BmdCommand::isGameMaster)
                         .executes(ctx -> assignRandom(ctx.getSource(),
                                 ctx.getSource().getServer().getPlayerList().getPlayers()))
-                        .then(Commands.argument("gracze", EntityArgument.players())
+                        .then(Commands.argument("players", EntityArgument.players())
                                 .executes(ctx -> assignRandom(ctx.getSource(),
-                                        EntityArgument.getPlayers(ctx, "gracze")))))
+                                        EntityArgument.getPlayers(ctx, "players")))))
 
-                .then(Commands.literal("ustaw")
+                .then(Commands.literal("set")
                         .requires(BmdCommand::isGameMaster)
-                        .then(Commands.argument("gracze", EntityArgument.players())
-                                .then(Commands.argument("klasa", StringArgumentType.word())
+                        .then(Commands.argument("players", EntityArgument.players())
+                                .then(Commands.argument("class", StringArgumentType.word())
                                         .suggests(SENSES)
                                         .executes(ctx -> assign(ctx.getSource(),
-                                                EntityArgument.getPlayers(ctx, "gracze"),
-                                                Sense.byName(StringArgumentType.getString(ctx, "klasa")))))))
+                                                EntityArgument.getPlayers(ctx, "players"),
+                                                Sense.byName(StringArgumentType.getString(ctx, "class")))))))
 
                 .then(Commands.literal("reset")
                         .requires(BmdCommand::isGameMaster)
                         .executes(BmdCommand::reset))
 
-                .then(Commands.literal("hard")
+                .then(Commands.literal("mode")
                         .requires(BmdCommand::isGameMaster)
-                        .then(Commands.argument("wlaczony", StringArgumentType.word())
-                                .suggests((ctx, b) -> SharedSuggestionProvider.suggest(new String[]{"on", "off"}, b))
-                                .executes(BmdCommand::hard)))
+                        .then(Commands.argument("level", StringArgumentType.word())
+                                .suggests((ctx, b) -> SharedSuggestionProvider.suggest(
+                                        new String[]{"easy", "normal", "hard"}, b))
+                                .executes(BmdCommand::mode)))
 
-                .then(Commands.literal("lista")
+                .then(Commands.literal("list")
                         .requires(BmdCommand::isGameMaster)
                         .executes(BmdCommand::list)));
     }
@@ -129,12 +130,18 @@ public final class BmdCommand {
         return 1;
     }
 
-    private static int hard(CommandContext<CommandSourceStack> ctx) {
-        boolean on = "on".equalsIgnoreCase(StringArgumentType.getString(ctx, "wlaczony"));
-        BmdConfig.get().blindHardMode = on;
-        BmdSync.broadcast(ctx.getSource().getServer());
-        ctx.getSource().sendSuccess(() -> Component.literal("Tryb hard dla slepych: " + (on ? "WLACZONY" : "wylaczony"))
-                .withStyle(on ? ChatFormatting.RED : ChatFormatting.GRAY), true);
+    private static int mode(CommandContext<CommandSourceStack> ctx) {
+        BlindMode m = BlindMode.byName(StringArgumentType.getString(ctx, "level"));
+        BmdConfig.get().blindMode = m.name();
+        MinecraftServer server = ctx.getSource().getServer();
+        BmdSync.broadcast(server);
+        // Opis klasy zalezy od trybu, wiec slepi dostaja swiezy briefing.
+        for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+            if (BmdState.get(p) == Sense.BLIND) BmdSync.briefing(p);
+        }
+        ctx.getSource().sendSuccess(() -> Component.literal(
+                "Slepota: " + m.pl + " (" + m.opis + ")")
+                .withStyle(m == BlindMode.HARD ? ChatFormatting.RED : ChatFormatting.GREEN), true);
         return 1;
     }
 

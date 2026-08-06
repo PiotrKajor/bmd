@@ -43,7 +43,7 @@ public class BmdClient implements ClientModInitializer {
                     ClientState.ROSTER.clear();
                     ClientState.ROSTER.putAll(payload.senses());
                     ClientState.mine = payload.mine();
-                    ClientState.hardMode = payload.hardMode();
+                    ClientState.blindMode = payload.blindMode();
                     ClientState.echoRange = payload.echoRange();
                     ClientState.showHud = payload.showHud();
                 }));

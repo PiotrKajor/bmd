@@ -25,19 +25,31 @@ public final class Briefing {
 
         switch (sense) {
             case BLIND -> {
-                out.add(flavor("Nie widzisz nic. Ekran jest czarny - na stale."));
-                if (!c.blindHardMode) {
-                    out.add(can("Echolokacja: dzwieki w promieniu " + (int) c.blindEchoRange
-                            + " blokow zapalaja wskaznik kierunku na krawedzi ekranu"));
-                    out.add(can("Im blizej zrodlo, tym jasniejszy wskaznik"));
-                } else {
-                    out.add(cannot("TRYB HARD: echolokacja wylaczona, zostaje sam sluch"));
+                BlindMode mode = BlindMode.byName(c.blindMode);
+                out.add(flavor("Tryb slepoty: " + mode.pl + " - " + mode.opis + "."));
+                switch (mode) {
+                    case EASY -> {
+                        out.add(can("Widzisz zarys tuz przed soba (Blindness + Darkness)"));
+                        out.add(cannot("Nie zobaczysz nic dalej niz kilka krokow"));
+                    }
+                    case NORMAL -> {
+                        out.add(can("Echolokacja: dzwieki w promieniu " + (int) c.blindEchoRange
+                                + " blokow zapalaja znacznik kierunku"));
+                        out.add(can("▲ dzwiek nad toba   ● na twoim poziomie   ▼ pod toba"));
+                        out.add(can("Im blizej zrodlo, tym znacznik blizej srodka i jasniejszy"));
+                    }
+                    case HARD -> out.add(cannot("Zero podpowiedzi - zostaje sam sluch"));
                 }
                 out.add(can("Slyszysz wszystko - gre i glos na Simple Voice Chat"));
                 out.add(can("Mowisz normalnie - jestes uszami i ustami druzyny"));
-                out.add(cannot("Nie widzisz ekwipunku, HUD-u ani craftingu"));
+                if (c.blindShowHud) {
+                    out.add(can("Widzisz swoj HUD: hotbar, zycie i glod"));
+                } else {
+                    out.add(cannot("Nie widzisz nawet wlasnego HUD-u"));
+                }
+                out.add(cannot("Nie widzisz swiata ani ekwipunku"));
                 if (c.blindSlowness) out.add(cannot("Poruszasz sie wolniej (Spowolnienie I)"));
-                out.add(hint("Trzymaj sie kogos glosem. Sam nie przejdziesz nawet przez drzwi."));
+                out.add(hint("Czat otworzysz [T] - komendy dzialaja, wiadomosci i tak nie przeczytasz."));
             }
             case MUTE -> {
                 out.add(flavor("Nie wydajesz dzwieku. Mikrofon jest odciety na serwerze."));
@@ -47,7 +59,7 @@ public final class Briefing {
                 if (c.muteHalfDamage) out.add(cannot("Zadajesz o polowe mniejsze obrazenia"));
                 if (c.muteCannotOpenContainers) out.add(cannot("Nie otwierasz skrzyn ani piecow"));
                 out.add(can("Widzisz i slyszysz wszystko - jestes oczami druzyny"));
-                out.add(can("Kolo gestow [G] - 8 znakow z dzwiekiem, widoczne nad glowa"));
+                out.add(can("Kolo gestow [G] - 12 znakow z dzwiekiem, widoczne nad glowa"));
                 if (c.muteItemSign) {
                     out.add(can("Tabliczka z przedmiotem [B] - wybierz dowolny przedmiot z gry,"));
                     out.add(can("  zawisnie nad twoja glowa na 10 sekund"));
@@ -68,7 +80,7 @@ public final class Briefing {
             }
             case NONE -> {
                 out.add(flavor("Masz wszystkie zmysly. Nie masz zadnych ograniczen."));
-                out.add(hint("/bmd losuj przydzieli klasy graczom."));
+                out.add(hint("/bmd random przydzieli klasy graczom."));
             }
         }
 

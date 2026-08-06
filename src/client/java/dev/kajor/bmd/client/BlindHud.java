@@ -5,17 +5,22 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import dev.kajor.bmd.BlindMode;
 import dev.kajor.bmd.Sense;
 
 /**
- * Czern rysowana na samym koncu HUD-u. W odroznieniu od efektu Blindness nie da sie
- * tego obejsc gamma, shaderem ani F3 - to zwykly prostokat na wierzchu wszystkiego.
+ * Czern zaslaniajaca swiat. W odroznieniu od efektu Blindness nie da sie tego
+ * obejsc gamma ani shaderem - to zwykly prostokat rysowany w HUD.
+ *
+ * Domyslnie idzie POD reszta HUD, wiec hotbar, zycie i glod zostaja widoczne:
+ * slepy ma nie widziec swiata, a nie wlasnego ekwipunku.
  */
 public class BlindHud implements HudElement {
 
     private static final int BLACK = 0xFF000000;
+    private static final long ECHO_LIFETIME_MS = 1400L;
 
-    /** true = warstwa na wierzchu HUD (czern zakrywa wszystko), false = pod HUD. */
+    /** true = warstwa na wierzchu HUD (czern zakrywa tez hotbar), false = pod HUD. */
     private final boolean over;
 
     public BlindHud(boolean over) {
@@ -25,7 +30,9 @@ public class BlindHud implements HudElement {
     @Override
     public void extractRenderState(GuiGraphicsExtractor gfx, DeltaTracker delta) {
         if (ClientState.mine != Sense.BLIND) return;
-        // Rysuje tylko ta warstwa, ktora pasuje do ustawienia serwera - druga milczy.
+        // W trybie latwym slepote robia wanilkowe efekty - nie zaslaniamy ekranu.
+        if (ClientState.blindMode == BlindMode.EASY) return;
+        // Rysuje tylko warstwa pasujaca do ustawienia serwera, druga milczy.
         if (over == ClientState.showHud) return;
 
         Minecraft mc = Minecraft.getInstance();
@@ -35,20 +42,22 @@ public class BlindHud implements HudElement {
         gfx.fill(0, 0, w, h, BLACK);
 
         // Jedyne wyjscie z ciemnosci: gracz musi wiedziec, ze da sie otworzyc czat.
-        // Historia czatu zostaje zakryta - widac tylko to, co sam wpisuje.
         gfx.centeredText(mc.font, Component.literal("[T] czat  •  /bmd info"),
                 w / 2, h - 12, 0x33FFFFFF);
 
-        if (ClientState.hardMode || mc.player == null) {
+        if (ClientState.blindMode == BlindMode.HARD || mc.player == null) {
             return;
         }
-
         drawEchoes(gfx, mc, w, h);
     }
 
     /**
      * Kazde zrodlo dzwieku to znacznik na okregu wokol srodka ekranu, ustawiony pod
-     * katem miedzy kierunkiem patrzenia a kierunkiem do dzwieku. Blizej i swiezej = jasniej.
+     * katem miedzy kierunkiem patrzenia a kierunkiem do dzwieku.
+     *
+     * Ksztalt niesie druga informacje - pion: ▲ nad toba, ● na twoim poziomie,
+     * ▼ pod toba. Swieze echo jest jasne i ma wokol siebie poswiate, ktora gasnie;
+     * dzieki temu widac, ktory dzwiek byl przed chwila, a ktory juz cichnie.
      */
     private void drawEchoes(GuiGraphicsExtractor gfx, Minecraft mc, int w, int h) {
         long now = System.currentTimeMillis();
@@ -64,29 +73,37 @@ public class BlindHud implements HudElement {
                 if (left <= 0) continue;
 
                 double dx = echo.x() - px;
-                double dz = echo.z() - pz;
                 double dy = echo.y() - py;
+                double dz = echo.z() - pz;
                 double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
                 if (dist > ClientState.echoRange) continue;
 
-                // kat wzgledem kierunku patrzenia; 0 = prosto przed siebie
                 double angleToSound = Math.toDegrees(Math.atan2(-dx, dz));
                 double rel = Math.toRadians(angleToSound - yaw);
 
-                int x = (int) (w / 2 + Math.sin(rel) * radius);
-                int y = (int) (h / 2 - Math.cos(rel) * radius);
-
-                float fade = (float) left / 1400.0F;
+                float fade = (float) left / ECHO_LIFETIME_MS;
                 float near = (float) (1.0D - Math.min(1.0D, dist / ClientState.echoRange));
-                int alpha = (int) (255 * Math.min(1.0F, fade * (0.35F + 0.65F * near)));
-                if (alpha < 12) continue;
 
-                // wyzej/nizej ode mnie - inny odcien, zeby dalo sie szukac w pionie
-                int rgb = dy > 1.5D ? 0x88CCFF : (dy < -1.5D ? 0xFFAA66 : 0xFFFFFF);
-                int color = (alpha << 24) | rgb;
+                // Blizsze dzwieki siadaja blizej srodka - promien niesie odleglosc,
+                // wiec nie trzeba jej zgadywac z samej jasnosci.
+                double r = radius * (0.45D + 0.55D * (1.0D - near));
+                int x = (int) (w / 2 + Math.sin(rel) * r);
+                int y = (int) (h / 2 - Math.cos(rel) * r);
 
-                int size = 2 + (int) (3 * near);
-                gfx.fill(x - size, y - size, x + size, y + size, color);
+                int alpha = (int) (255 * Math.min(1.0F, fade * (0.45F + 0.55F * near)));
+                if (alpha < 16) continue;
+
+                String glyph = dy > 1.5D ? "▲" : (dy < -1.5D ? "▼" : "●");
+                int rgb = dy > 1.5D ? 0x9CD2FF : (dy < -1.5D ? 0xFFC48C : 0xFFFFFF);
+
+                // Poswiata: ta sama ikona pod spodem, ciemniejsza i lekko przesunieta,
+                // daje wrazenie rozchodzacej sie fali bez rysowania osobnego okregu.
+                int halo = (int) (alpha * 0.35F);
+                if (halo > 12) {
+                    gfx.centeredText(mc.font, Component.literal(glyph), x, y - 1, (halo << 24) | rgb);
+                    gfx.centeredText(mc.font, Component.literal(glyph), x, y + 1, (halo << 24) | rgb);
+                }
+                gfx.centeredText(mc.font, Component.literal(glyph), x, y, (alpha << 24) | rgb);
             }
         }
     }

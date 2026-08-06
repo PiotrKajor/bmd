@@ -28,13 +28,13 @@ public class BmdConfig {
     public boolean deafAggroRangeDoubled = false;
 
     // --- BLIND ---
-    /** Tryb hard: gasnie takze echolokacja - zostaje sam dzwiek z gry. */
-    public boolean blindHardMode = false;
+    /** easy = Blindness+Darkness, normal = czern+echolokacja, hard = sama czern. */
+    public String blindMode = "NORMAL";
     /** Zasieg (w blokach), z ktorego echolokacja pokazuje kierunek dzwieku. */
     public double blindEchoRange = 24.0D;
     public boolean blindSlowness = false;
-    /** Lagodniejszy wariant: czern nie zakrywa hotbara i paskow zycia. */
-    public boolean blindShowHud = false;
+    /** Slepy ma nie widziec swiata, ale swoj HUD (hotbar, zycie, glod) juz tak. */
+    public boolean blindShowHud = true;
 
     /** Czy niemy moze wystawic nad glowa dowolny przedmiot jako komunikat. */
     public boolean muteItemSign = true;

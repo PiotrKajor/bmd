@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import dev.kajor.bmd.BlindMode;
 import dev.kajor.bmd.Sense;
 import dev.kajor.bmd.client.ClientState;
 import dev.kajor.bmd.client.Echolocation;
@@ -30,7 +31,7 @@ public class MixinSoundManager {
             cir.setReturnValue(SoundEngine.PlayResult.NOT_STARTED);
             return;
         }
-        if (ClientState.mine == Sense.BLIND && !ClientState.hardMode) {
+        if (ClientState.mine == Sense.BLIND && ClientState.blindMode == BlindMode.NORMAL) {
             Echolocation.onSound(sound);
         }
     }
