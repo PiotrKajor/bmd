@@ -18,7 +18,7 @@ public final class BmdSync {
     public static void send(ServerPlayer player) {
         ServerPlayNetworking.send(player, new BmdPayloads.Roster(
                 BmdState.all(), BmdState.get(player), BlindMode.byName(BmdConfig.get().blindMode), BmdConfig.get().blindEchoRange,
-                BmdConfig.get().blindShowHud));
+                BmdConfig.get().blindShowHud, BmdConfig.get().blindEasyDarkness));
     }
 
     /** Wyswietla graczowi opis jego klasy. */

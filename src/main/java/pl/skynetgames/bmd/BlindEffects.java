@@ -16,6 +16,10 @@ public final class BlindEffects {
 
     private static final int REFRESH_TICKS = 20;
     private static final int EFFECT_TICKS = 100;
+    /** Blindness i Darkness nie skaluja sie z poziomem, ale wyzszy nie szkodzi
+     *  i liczy sie, gdyby ktores mody na to reagowaly. Prawdziwe wzmocnienie
+     *  robi przyciemnienie ekranu po stronie klienta (blindEasyDarkness). */
+    private static final int AMPLIFIER = 2;
 
     private static int counter = 0;
 
@@ -30,8 +34,8 @@ public final class BlindEffects {
 
                 if (easy) {
                     // ambient + bez czasteczek: ekran czysty, bez wirujacych kropek
-                    player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, EFFECT_TICKS, 0, true, false, false));
-                    player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, EFFECT_TICKS, 0, true, false, false));
+                    player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, EFFECT_TICKS, AMPLIFIER, true, false, false));
+                    player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, EFFECT_TICKS, AMPLIFIER, true, false, false));
                 } else {
                     // w pozostalych trybach czern rysuje klient - wanilkowe efekty tylko by przeszkadzaly
                     player.removeEffect(MobEffects.BLINDNESS);

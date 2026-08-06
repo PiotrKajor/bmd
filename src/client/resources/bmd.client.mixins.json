@@ -4,7 +4,8 @@
   "package": "pl.skynetgames.bmd.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "MixinSoundManager"
+    "MixinSoundManager",
+    "MixinScreen"
   ],
   "injectors": {
     "defaultRequire": 1

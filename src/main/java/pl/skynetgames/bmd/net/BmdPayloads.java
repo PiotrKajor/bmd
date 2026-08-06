@@ -27,7 +27,7 @@ public final class BmdPayloads {
      * na jednym serwerze jest mala, delty nie sa tego warte.
      */
     public record Roster(Map<UUID, Sense> senses, Sense mine, BlindMode blindMode, double echoRange,
-                         boolean showHud) implements CustomPacketPayload {
+                         boolean showHud, double easyDarkness) implements CustomPacketPayload {
         public static final Type<Roster> TYPE =
                 new Type<>(Identifier.fromNamespaceAndPath(BmdMod.MOD_ID, "roster"));
 
@@ -42,6 +42,7 @@ public final class BmdPayloads {
                     buf.writeVarInt(v.blindMode.ordinal());
                     buf.writeDouble(v.echoRange);
                     buf.writeBoolean(v.showHud);
+                    buf.writeDouble(v.easyDarkness);
                 },
                 buf -> {
                     int n = buf.readVarInt();
@@ -50,7 +51,7 @@ public final class BmdPayloads {
                         map.put(buf.readUUID(), readSense(buf));
                     }
                     return new Roster(map, readSense(buf), BlindMode.byOrdinal(buf.readVarInt()),
-                            buf.readDouble(), buf.readBoolean());
+                            buf.readDouble(), buf.readBoolean(), buf.readDouble());
                 });
 
         @Override
