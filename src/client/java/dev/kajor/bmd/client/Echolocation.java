@@ -34,10 +34,15 @@ public final class Echolocation {
     /** Znacznik samego zrodla zyje krocej - ma mowic "teraz", nie "gdzies tam". */
     public static final long CORE_FADE_MS = 1400L;
 
-    private static final int MAX_ECHOES = 10;
-    private static final int RAYS = 96;
-    /** Skanow na tick - kazdy to 96 raycastow, wiec nie wszystkie naraz. */
-    private static final int SCANS_PER_TICK = 2;
+    private static final int MAX_ECHOES = 6;
+    /**
+     * Promieni na dzwiek. Sfera rozklada je na wszystkie strony, a w kadrze miesci sie
+     * niecala szosta czesc sfery - przy 96 promieniach na ekranie ladowalo kilkanascie
+     * punktow i nie skladalo sie to w zaden ksztalt. 480 daje juz zarys pokoju.
+     */
+    private static final int RAYS = 480;
+    /** Skanow na tick - kazdy to 480 raycastow, wiec nie wszystkie naraz. */
+    private static final int SCANS_PER_TICK = 1;
     /** Kolejka nie moze puchnac, gdy gracz stoi w tlumie mobow. */
     private static final int MAX_PENDING = 24;
     /** Dwa dzwieki z tego samego miejsca w tej samej chwili daja ten sam skan. */
