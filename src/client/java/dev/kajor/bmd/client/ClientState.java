@@ -36,7 +36,13 @@ public final class ClientState {
     public record Signal(int emoteId, Identifier itemId, long expiresAt) {
     }
 
-    public record Echo(double x, double y, double z, long bornAt, long expiresAt) {
+    /**
+     * Zrodlo dzwieku plus obmacany wokol niego ksztalt swiata.
+     *
+     * @param cloud po 5 liczb na punkt: dx, dy, dz wzgledem zrodla, dystans od niego
+     *              i rodzaj powierzchni (0 podloga, 1 sciana, 2 sufit)
+     */
+    public record Echo(double x, double y, double z, long bornAt, long expiresAt, float[] cloud) {
     }
 
     /**

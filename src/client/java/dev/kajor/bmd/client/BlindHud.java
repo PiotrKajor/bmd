@@ -22,7 +22,10 @@ import dev.kajor.bmd.Sense;
 public class BlindHud implements HudElement {
 
     private static final int BLACK = 0xFF000000;
-    private static final long ECHO_LIFETIME_MS = 1400L;
+    private static final long ECHO_LIFETIME_MS = Echolocation.CORE_FADE_MS;
+
+    /** Kolor punktu wg powierzchni: 0 podloga (cieplo), 1 sciana (chlodno), 2 sufit. */
+    private static final int[] SURFACE = {0xFFD9A0, 0xBFE6FF, 0x9B8BD8};
 
     /** true = warstwa na wierzchu HUD (czern zakrywa tez hotbar), false = pod HUD. */
     private final boolean over;
@@ -62,22 +65,19 @@ public class BlindHud implements HudElement {
     }
 
     /**
-     * Kazde zrodlo dzwieku to znacznik na okregu wokol srodka ekranu, ustawiony pod
-     * katem miedzy kierunkiem patrzenia a kierunkiem do dzwieku.
+     * Kazde echo maluje sie dwoma warstwami.
      *
-     * Ksztalt niesie druga informacje - pion: ▲ nad toba, ● na twoim poziomie,
-     * ▼ pod toba. Swieze echo jest jasne i ma wokol siebie poswiate, ktora gasnie;
-     * dzieki temu widac, ktory dzwiek byl przed chwila, a ktory juz cichnie.
-     */
-    /**
-     * Znacznik ladu je tam, gdzie naprawde jest zrodlo dzwieku - ta sama projekcja,
-     * ktorej uzywaja nametagi. Dzieki temu slepy slyszy krok i widzi punkt dokladnie
-     * w tym miejscu przestrzeni, a nie na obreczy wokol celownika.
+     * Chmura: punkty, w ktore trafily promienie wystrzelone ze zrodla dzwieku,
+     * rzutowane ta sama projekcja, co nametagi - stoja dokladnie tam, gdzie stoi
+     * sciana, wiec pokoj czyta sie w trzech wymiarach, a nie jako plamki na obreczy.
+     * Fala rozchodzi sie w czasie, wiec ksztalt rozlewa sie od zrodla i gasnie.
+     * Kolor niesie orientacje powierzchni: podloga cieplo, sciana chlodno, sufit fiolet.
+     * Rozmiar punktu maleje z odlegloscia od oka - to caly efekt glebi.
      *
-     * Dzwiek za plecami nie ma gdzie wyladowac, wiec laduje na krawedzi ekranu
-     * w swoim kierunku - inaczej zniknalby zupelnie.
-     *
-     * Ksztalt niesie pion: ▲ nad toba, ● na twoim poziomie, ▼ pod toba.
+     * Rdzen: samo zrodlo dzwieku, ▲ nad toba / ● na twoim poziomie / ▼ pod toba.
+     * Rzeczy, ktore halasuja, ale nie sa blokami (gracz, mob), nie zostawiaja punktow -
+     * ten znacznik jest jedynym, co po nich zostaje. Dzwiek zza plecow nie ma gdzie
+     * wyladowac, wiec laduje na krawedzi ekranu w swoim kierunku.
      */
     private void drawEchoes(GuiGraphicsExtractor gfx, Minecraft mc, int w, int h) {
         Camera camera = mc.gameRenderer.mainCamera();
@@ -86,51 +86,85 @@ public class BlindHud implements HudElement {
         long now = System.currentTimeMillis();
         Vec3 eye = camera.position();
         Entity view = camera.entity();
-        double px = mc.player.getX();
-        double py = mc.player.getY();
-        double pz = mc.player.getZ();
+        double yaw = view.getYRot();
+        double pitch = view.getXRot();
+        double fov = camera.getFov();
+        double range = ClientState.echoRange;
 
         synchronized (ClientState.ECHOES) {
             for (ClientState.Echo echo : ClientState.ECHOES) {
-                long left = echo.expiresAt() - now;
-                if (left <= 0) continue;
-
-                double dx = echo.x() - px;
-                double dy = echo.y() - py;
-                double dz = echo.z() - pz;
-                double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                if (dist > ClientState.echoRange) continue;
-
-                float fade = (float) left / ECHO_LIFETIME_MS;
-                float near = (float) (1.0D - Math.min(1.0D, dist / ClientState.echoRange));
-                int alpha = (int) (255 * Math.min(1.0F, fade * (0.45F + 0.55F * near)));
-                if (alpha < 16) continue;
-
-                int[] p = Geometry.project(eye.x, eye.y, eye.z, view.getYRot(), view.getXRot(),
-                        camera.getFov(), w, h, echo.x(), echo.y(), echo.z(), ClientState.echoRange + 1);
-
-                int x, y;
-                if (p != null) {
-                    x = Math.clamp(p[0], 8, w - 8);
-                    y = Math.clamp(p[1], 8, h - 8);
-                } else {
-                    // poza kadrem: kierunek w poziomie, znacznik na obrzezu ekranu
-                    double angle = Math.toRadians(Math.toDegrees(Math.atan2(-dx, dz)) - mc.player.getYRot());
-                    double r = Math.min(w, h) * 0.44D;
-                    x = (int) Math.clamp(w / 2 + Math.sin(angle) * r, 8, w - 8);
-                    y = (int) Math.clamp(h / 2 - Math.cos(angle) * r, 8, h - 8);
-                }
-
-                String glyph = dy > 1.5D ? "▲" : (dy < -1.5D ? "▼" : "●");
-                int rgb = dy > 1.5D ? 0x9CD2FF : (dy < -1.5D ? 0xFFC48C : 0xFFFFFF);
-
-                int halo = (int) (alpha * 0.35F);
-                if (halo > 12) {
-                    gfx.centeredText(mc.font, Component.literal(glyph), x, y - 1, (halo << 24) | rgb);
-                    gfx.centeredText(mc.font, Component.literal(glyph), x, y + 1, (halo << 24) | rgb);
-                }
-                gfx.centeredText(mc.font, Component.literal(glyph), x, y, (alpha << 24) | rgb);
+                if (echo.expiresAt() <= now) continue;
+                long age = now - echo.bornAt();
+                drawCloud(gfx, echo, age, eye, yaw, pitch, fov, w, h, range);
+                drawCore(gfx, mc, echo, age, eye, yaw, pitch, fov, w, h, range);
             }
         }
+    }
+
+    private void drawCloud(GuiGraphicsExtractor gfx, ClientState.Echo echo, long age,
+                           Vec3 eye, double yaw, double pitch, double fov, int w, int h, double range) {
+        float[] cloud = echo.cloud();
+        for (int i = 0; i + 4 < cloud.length; i += 5) {
+            float fade = Geometry.waveFade(age, cloud[i + 3], Echolocation.WAVE_SPEED, Echolocation.POINT_FADE_MS);
+            if (fade <= 0.0F) continue;
+
+            double x = echo.x() + cloud[i];
+            double y = echo.y() + cloud[i + 1];
+            double z = echo.z() + cloud[i + 2];
+
+            double ex = x - eye.x, ey = y - eye.y, ez = z - eye.z;
+            double toEye = Math.sqrt(ex * ex + ey * ey + ez * ez);
+            // Bez testu glebi punkt za sciana i tak sie zapali - to celowe: echolokacja
+            // ma czuc pokoj obok, nie odwzorowywac wzrok.
+            int alpha = (int) (255 * fade * (0.30F + 0.70F * (float) (1.0D - Math.min(1.0D, toEye / range))));
+            if (alpha < 12) continue;
+
+            int[] p = Geometry.project(eye.x, eye.y, eye.z, yaw, pitch, fov, w, h, x, y, z, range * 2);
+            if (p == null || p[0] < 0 || p[0] >= w || p[1] < 0 || p[1] >= h) continue;
+
+            int size = toEye < 4.0D ? 3 : (toEye < 10.0D ? 2 : 1);
+            gfx.fill(p[0], p[1], p[0] + size, p[1] + size, (alpha << 24) | SURFACE[(int) cloud[i + 4]]);
+        }
+    }
+
+    private void drawCore(GuiGraphicsExtractor gfx, Minecraft mc, ClientState.Echo echo, long age,
+                          Vec3 eye, double yaw, double pitch, double fov, int w, int h, double range) {
+        if (age >= ECHO_LIFETIME_MS) return;
+
+        double dx = echo.x() - mc.player.getX();
+        double dy = echo.y() - mc.player.getY();
+        double dz = echo.z() - mc.player.getZ();
+        double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        if (dist > range) return;
+
+        float fade = 1.0F - (float) age / ECHO_LIFETIME_MS;
+        float near = (float) (1.0D - Math.min(1.0D, dist / range));
+        int alpha = (int) (255 * Math.min(1.0F, fade * (0.45F + 0.55F * near)));
+        if (alpha < 16) return;
+
+        int[] p = Geometry.project(eye.x, eye.y, eye.z, yaw, pitch, fov, w, h,
+                echo.x(), echo.y(), echo.z(), range + 1);
+
+        int x, y;
+        if (p != null) {
+            x = Math.clamp(p[0], 8, w - 8);
+            y = Math.clamp(p[1], 8, h - 8);
+        } else {
+            // poza kadrem: kierunek w poziomie, znacznik na obrzezu ekranu
+            double angle = Math.toRadians(Math.toDegrees(Math.atan2(-dx, dz)) - mc.player.getYRot());
+            double r = Math.min(w, h) * 0.44D;
+            x = (int) Math.clamp(w / 2 + Math.sin(angle) * r, 8, w - 8);
+            y = (int) Math.clamp(h / 2 - Math.cos(angle) * r, 8, h - 8);
+        }
+
+        String glyph = dy > 1.5D ? "▲" : (dy < -1.5D ? "▼" : "●");
+        int rgb = dy > 1.5D ? 0x9CD2FF : (dy < -1.5D ? 0xFFC48C : 0xFFFFFF);
+
+        int halo = (int) (alpha * 0.35F);
+        if (halo > 12) {
+            gfx.centeredText(mc.font, Component.literal(glyph), x, y - 1, (halo << 24) | rgb);
+            gfx.centeredText(mc.font, Component.literal(glyph), x, y + 1, (halo << 24) | rgb);
+        }
+        gfx.centeredText(mc.font, Component.literal(glyph), x, y, (alpha << 24) | rgb);
     }
 }

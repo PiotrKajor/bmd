@@ -13,7 +13,7 @@ Mod musi być **i na serwerze, i u graczy** — ślepota, wyciszenie dźwięku i
 
 | Klasa | Co traci | Co dostaje |
 |-------|----------|------------|
-| 👁 **Ślepy** | Ekran całkowicie czarny | Echolokacja: dźwięki w pobliżu zapalają wskaźnik kierunku |
+| 👁 **Ślepy** | Ekran całkowicie czarny | Echolokacja 3D: dźwięk wystrzeliwuje falę, która oświetla kształt pokoju |
 | 🔇 **Niemy** | Mikrofon odcięty na serwerze, brak czatu, brak obrażeń | Koło gestów + tabliczka z dowolnym przedmiotem |
 | 🔈 **Głuchy** | Zero dźwięku (gra i głos), brak PPM | Mówi normalnie, widzi wszystkie gesty |
 

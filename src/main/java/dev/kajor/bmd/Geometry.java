@@ -49,6 +49,43 @@ public final class Geometry {
     }
 
     /**
+     * Rownomiernie rozrzucone kierunki na sferze (spirala Fibonacciego) - promienie,
+     * ktore echolokacja wystrzeliwuje ze zrodla dzwieku, zeby obmacac ksztalt pokoju.
+     * Rownomiernie, bo siatka po dlugosci/szerokosci zageszcza promienie na biegunach:
+     * sufit i podloga bylyby gestsze od scian.
+     *
+     * @return tablica n*3 skladowych x,y,z (wektory jednostkowe)
+     */
+    public static float[] sphereDirections(int n) {
+        float[] dirs = new float[n * 3];
+        double golden = Math.PI * (3.0D - Math.sqrt(5.0D));
+        for (int i = 0; i < n; i++) {
+            double y = n == 1 ? 0.0D : 1.0D - 2.0D * i / (n - 1);
+            double r = Math.sqrt(Math.max(0.0D, 1.0D - y * y));
+            double theta = golden * i;
+            dirs[i * 3] = (float) (Math.cos(theta) * r);
+            dirs[i * 3 + 1] = (float) y;
+            dirs[i * 3 + 2] = (float) (Math.sin(theta) * r);
+        }
+        return dirs;
+    }
+
+    /**
+     * Jasnosc punktu trafionego przez rozchodzaca sie fale dzwieku.
+     *
+     * Fala leci ze zrodla z predkoscia speed - punkt oddalony o dist zapala sie
+     * dopiero, gdy fala do niego dotrze, i od tej chwili gasnie przez fadeMs.
+     * Dzieki temu pokoj nie pojawia sie caly naraz, tylko rozlewa sie od zrodla.
+     *
+     * @return 1.0 tuz po odbiciu, 0.0 gdy fala jeszcze nie dotarla albo juz zgaslo
+     */
+    public static float waveFade(long ageMs, double dist, double speed, long fadeMs) {
+        double sinceHit = ageMs - dist / speed * 1000.0D;
+        if (sinceHit < 0.0D || sinceHit >= fadeMs) return 0.0F;
+        return (float) (1.0D - sinceHit / fadeMs);
+    }
+
+    /**
      * Ktory sektor kola wskazuje mysz. Srodek to strefa martwa, inaczej kazde
      * drgniecie myszy cos wybiera.
      *
@@ -111,6 +148,27 @@ public final class Geometry {
         // obrot o 180 stopni: ten sam punkt ma trafic za kamere
         check(project(0, 0, 0, 180, 0, 70, 800, 600, 0, 0, 10, 64) == null,
                 "po obrocie o 180 stopni cel jest za plecami");
+
+        // Promienie echolokacji: same wektory jednostkowe i zadnego zbitka w jednym miejscu.
+        float[] dirs = sphereDirections(96);
+        check(dirs.length == 96 * 3, "96 kierunkow to 288 skladowych");
+        double minY = 1.0D, maxY = -1.0D;
+        for (int i = 0; i < 96; i++) {
+            double len = Math.sqrt(dirs[i * 3] * dirs[i * 3] + dirs[i * 3 + 1] * dirs[i * 3 + 1]
+                    + dirs[i * 3 + 2] * dirs[i * 3 + 2]);
+            check(Math.abs(len - 1.0D) < 1e-5, "kierunek " + i + " jest jednostkowy (dlugosc " + len + ")");
+            minY = Math.min(minY, dirs[i * 3 + 1]);
+            maxY = Math.max(maxY, dirs[i * 3 + 1]);
+        }
+        check(minY < -0.98D && maxY > 0.98D, "promienie siegaja i podlogi, i sufitu");
+        check(sphereDirections(1).length == 3, "jeden promien nie dzieli przez zero");
+
+        // Fala: 28 blokow na sekunde, punkt 28 blokow dalej zapala sie po sekundzie.
+        check(waveFade(500, 28, 28.0D, 1000) == 0.0F, "fala jeszcze nie doleciala");
+        check(Math.abs(waveFade(1000, 28, 28.0D, 1000) - 1.0F) < 1e-4F, "swieze odbicie swieci pelnia");
+        check(Math.abs(waveFade(1500, 28, 28.0D, 1000) - 0.5F) < 1e-4F, "w polowie zaniku polowa jasnosci");
+        check(waveFade(2000, 28, 28.0D, 1000) == 0.0F, "po zaniku punkt gasnie");
+        check(waveFade(0, 0, 28.0D, 1000) == 1.0F, "punkt w samym zrodle zapala sie od razu");
 
         System.out.println("Geometry: wszystkie sprawdzenia przeszly");
     }
