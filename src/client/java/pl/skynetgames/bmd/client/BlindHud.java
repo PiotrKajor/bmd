@@ -116,13 +116,13 @@ public class BlindHud implements HudElement {
             double toEye = Math.sqrt(ex * ex + ey * ey + ez * ez);
             // Bez testu glebi punkt za sciana i tak sie zapali - to celowe: echolokacja
             // ma czuc pokoj obok, nie odwzorowywac wzrok.
-            int alpha = (int) (255 * fade * (0.30F + 0.70F * (float) (1.0D - Math.min(1.0D, toEye / range))));
+            int alpha = (int) (255 * fade * (0.45F + 0.55F * (float) (1.0D - Math.min(1.0D, toEye / range))));
             if (alpha < 12) continue;
 
             int[] p = Geometry.project(eye.x, eye.y, eye.z, yaw, pitch, fov, w, h, x, y, z, range * 2);
             if (p == null || p[0] < 0 || p[0] >= w || p[1] < 0 || p[1] >= h) continue;
 
-            int size = toEye < 4.0D ? 3 : (toEye < 10.0D ? 2 : 1);
+            int size = toEye < 6.0D ? 3 : (toEye < 14.0D ? 2 : 1);
             gfx.fill(p[0], p[1], p[0] + size, p[1] + size, (alpha << 24) | SURFACE[(int) cloud[i + 4]]);
         }
     }
