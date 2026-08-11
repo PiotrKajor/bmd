@@ -29,10 +29,13 @@ public final class Geometry {
         double pitch = Math.toRadians(pitchDeg);
         double cosPitch = Math.cos(pitch);
 
-        // baza kamery: forward tam, gdzie patrzy gracz; right w prawo; up = forward x right
+        // baza kamery: forward tam, gdzie patrzy gracz; right w prawo; up = right x forward.
+        // Uwaga na konwencje Minecrafta: przy yaw=0 patrzymy na poludnie (+Z), wiec prawa
+        // reka wskazuje zachod (-X) - stad minusy w r. Z (+cos, +sin) wychodzi lewo i caly
+        // HUD jest odbity w lustrze.
         double fx = -Math.sin(yaw) * cosPitch, fy = -Math.sin(pitch), fz = Math.cos(yaw) * cosPitch;
-        double rx = Math.cos(yaw), ry = 0.0D, rz = Math.sin(yaw);
-        double ux = fy * rz - fz * ry, uy = fz * rx - fx * rz, uz = fx * ry - fy * rx;
+        double rx = -Math.cos(yaw), ry = 0.0D, rz = -Math.sin(yaw);
+        double ux = ry * fz - rz * fy, uy = rz * fx - rx * fz, uz = rx * fy - ry * fx;
 
         double z = vx * fx + vy * fy + vz * fz;
         if (z < 0.15D) return null;
@@ -134,9 +137,12 @@ public final class Geometry {
         check(Math.abs(center[0] - 400) <= 1 && Math.abs(center[1] - 300) <= 1,
                 "cel na wprost = srodek ekranu, dostalem " + center[0] + "," + center[1]);
 
-        // yaw=0 patrzy w +Z, wiec cel w +X musi wyladowac po prawej stronie
-        int[] right = project(0, 0, 0, 0, 0, 70, 800, 600, 3, 0, 10, 64);
-        check(right != null && right[0] > 400, "cel w +X jest po prawej");
+        // yaw=0 patrzy na poludnie (+Z), wiec +X (wschod) jest po LEWEJ - to test na odbicie lustrzane
+        int[] east = project(0, 0, 0, 0, 0, 70, 800, 600, 3, 0, 10, 64);
+        check(east != null && east[0] < 400, "cel w +X jest po lewej");
+        // ...a przy yaw=90 (patrzymy na zachod, -X) po prawej jest polnoc (-Z)
+        int[] eastFromWest = project(0, 0, 0, 90, 0, 70, 800, 600, -10, 0, -3, 64);
+        check(eastFromWest != null && eastFromWest[0] > 400, "przy yaw=90 cel w -Z jest po prawej");
 
         // cel wyzej = wyzej na ekranie (mniejszy Y)
         int[] up = project(0, 0, 0, 0, 0, 70, 800, 600, 0, 3, 10, 64);
