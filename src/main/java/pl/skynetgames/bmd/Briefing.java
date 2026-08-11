@@ -25,6 +25,14 @@ public final class Briefing {
                 .append(sense.displayName().copy().withStyle(sense.color, ChatFormatting.BOLD)));
         out.add(Component.empty());
 
+        // Ukonczone wyzwanie wylacza wszystko naraz i nie zostawia po sobie zadnego
+        // sladu na ekranie - bez tej linijki opis obiecuje kary, ktorych nie ma,
+        // a /bmd mode wyglada na zepsute. Wraca po /bmd goal clear.
+        if (!BmdState.effectsActive()) {
+            out.add(hint("bmd.goal.effects_off"));
+            out.add(Component.empty());
+        }
+
         switch (sense) {
             case BLIND -> {
                 BlindMode mode = BlindMode.byName(c.blindMode);

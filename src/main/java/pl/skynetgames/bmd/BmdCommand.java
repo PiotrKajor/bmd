@@ -170,6 +170,12 @@ public final class BmdCommand {
         }
         ctx.getSource().sendSuccess(() -> Component.translatable("bmd.cmd.blind_mode", m.displayName())
                 .withStyle(m == BlindMode.HARD ? ChatFormatting.RED : ChatFormatting.GREEN), true);
+        // Przy ukonczonym wyzwaniu zmiana trybu nie zrobi nic widocznego - powiedz to
+        // od razu, zamiast pozwolic szukac bledu w slepocie.
+        if (!BmdState.effectsActive()) {
+            ctx.getSource().sendSuccess(() -> Component.translatable("bmd.goal.effects_off")
+                    .withStyle(ChatFormatting.YELLOW), false);
+        }
         return 1;
     }
 
