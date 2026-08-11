@@ -14,6 +14,7 @@ import java.nio.file.Path;
 public class BmdConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static BmdConfig instance;
+    private static Path file;
 
     // --- MUTE ---
     public boolean muteCannotAttack = true;
@@ -52,17 +53,28 @@ public class BmdConfig {
         return instance;
     }
 
-    public static void load(Path file) {
+    public static void load(Path path) {
+        file = path;
         try {
-            if (Files.exists(file)) {
-                instance = GSON.fromJson(Files.readString(file), BmdConfig.class);
+            if (Files.exists(path)) {
+                instance = GSON.fromJson(Files.readString(path), BmdConfig.class);
             }
             if (instance == null) instance = new BmdConfig();
-            Files.createDirectories(file.getParent());
-            Files.writeString(file, GSON.toJson(instance));
+            Files.createDirectories(path.getParent());
+            Files.writeString(path, GSON.toJson(instance));
         } catch (IOException | RuntimeException e) {
             BmdMod.LOG.error("Nie udalo sie wczytac configu, jade na domyslnym", e);
             instance = new BmdConfig();
+        }
+    }
+
+    /** Po zmianie z komendy - bez tego /bmd mode zyje tylko do restartu serwera. */
+    public static void save() {
+        if (file == null || instance == null) return;
+        try {
+            Files.writeString(file, GSON.toJson(instance));
+        } catch (IOException e) {
+            BmdMod.LOG.error("Nie udalo sie zapisac configu", e);
         }
     }
 }

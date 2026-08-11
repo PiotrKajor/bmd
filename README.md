@@ -28,21 +28,28 @@ Konfiguracja SVC u gracza nic tu nie zmieni.
 
 ```
 /bmd                          opis własnej klasy (każdy)
-/bmd losuj [gracze]           równomiernie rozdaje trzy klasy
-/bmd ustaw <gracze> <klasa>   blind | mute | deaf | none
-/bmd hard <on|off>            ślepym gaśnie echolokacja
-/bmd lista                    kto co ma
+/bmd random [gracze]          równomiernie rozdaje trzy klasy
+/bmd set <gracze> <klasa>     blind | mute | deaf | none
+/bmd mode <easy|normal|hard>  jak mocno ślepy jest ślepy (zapisuje się do configu)
+/bmd list                     kto co ma
 /bmd reset                    czyści wszystko
+
+/bmd goal                     jakie wyzwanie leci i od ilu (każdy)
+/bmd goal random <trudność>   losuje cel: easy | normal | hard
+/bmd goal set <id>            konkretny cel
+/bmd goal list <trudność>     20 celów danej trudności
+/bmd goal clear               kasuje wyzwanie
 ```
 
-Wszystko poza `/bmd` i `/bmd info` wymaga uprawnień gamemastera (dawny poziom 2).
+Wszystko poza `/bmd`, `/bmd info`, `/bmd goal` i `/bmd goal list` wymaga uprawnień
+gamemastera (dawny poziom 2). Ukończenie celu gasi wszystkie ograniczenia naraz.
 
 ## Klawisze
 
 | Klawisz | Działanie |
 |---------|-----------|
-| **G** (przytrzymaj) | koło gestów — celuj myszą, puść klawisz |
-| **B** | tabliczka z przedmiotem (tylko niemy) |
+| **Lewy Ctrl** (przytrzymaj) | koło gestów — celuj myszą, puść klawisz |
+| **Lewy Alt** | tabliczka z przedmiotem (tylko niemy) |
 
 Gesty: Tak ✔, Nie ✕, Pomocy ❤, Uwaga ⚠, Za mną ➜, Czekaj ⌛, Nie wiem ?, Ha ha ☺.
 Każdy ma własny dźwięk — ślepy usłyszy, że ktoś coś pokazuje, ale nie dowie się co.
@@ -52,23 +59,29 @@ Każdy ma własny dźwięk — ślepy usłyszy, że ktoś coś pokazuje, ale nie
 Plik `bmd_config.json` w folderze świata, tworzony przy pierwszym starcie.
 Debuffy włączone domyślnie: `muteCannotAttack`, `muteCannotChat`, `deafCannotUseItems`.
 
-Wyłączone, do włączenia jednym `true`:
+Działające klucze:
 
-| Klucz | Efekt |
-|-------|-------|
-| `muteCannotOpenContainers` | niemy nie otwiera skrzyń i pieców |
-| `muteHalfDamage` | niemy zadaje o połowę mniej obrażeń (zamiast zera) |
-| `deafHidesNameTags` | głuchy nie widzi nicków |
-| `deafMinesSlower` | głuchy kopie 2× wolniej |
-| `deafAggroRangeDoubled` | moby wykrywają głuchego z 2× większej odległości |
-| `blindSlowness` | ślepy porusza się wolniej |
-| `blindHardMode` | ślepy bez echolokacji (to samo co `/bmd hard on`) |
-| `blindEchoRange` | zasięg echolokacji w blokach (domyślnie 24) |
+| Klucz | Domyślnie | Efekt |
+|-------|-----------|-------|
+| `muteCannotAttack` | `true` | niemy nie zadaje obrażeń niczym (też strzałą) |
+| `muteCannotChat` | `true` | niemy nie pisze na czacie ani przez `/msg`, `/me`, `/say` |
+| `muteItemSign` | `true` | niemy wystawia nad głowę dowolny przedmiot |
+| `deafCannotUseItems` | `true` | głuchy nie używa PPM (jedzenie zostaje) |
+| `onlyBlindCanCraft` | `true` | craftować może wyłącznie ślepy |
+| `requireClientMod` | `true` | wyrzuca graczy bez moda po stronie klienta |
+| `blindMode` | `"NORMAL"` | `EASY` \| `NORMAL` \| `HARD` — to samo co `/bmd mode` |
+| `blindEchoRange` | `24.0` | zasięg echolokacji w blokach |
+| `blindShowHud` | `true` | czerń idzie pod HUD (hotbar i paski widoczne) |
+| `blindEasyDarkness` | `0.6` | dodatkowe przyciemnienie ekranu w trybie `EASY` (0.0–1.0) |
+
+Klucze zapisane w configu, ale **jeszcze nic nie robią** — ustawienie `true` doda tylko
+linijkę w opisie klasy: `muteCannotOpenContainers`, `muteHalfDamage`, `deafHidesNameTags`,
+`deafMinesSlower`, `deafAggroRangeDoubled`, `blindSlowness`.
 
 ## Build
 
 ```bash
-./gradlew build          # → build/libs/bmd-1.0.0.jar
+./gradlew build          # → build/libs/bmd-<wersja>.jar
 ./gradlew runServer      # serwer deweloperski
 java src/main/java/dev/kajor/bmd/Geometry.java   # self-check matematyki
 ```

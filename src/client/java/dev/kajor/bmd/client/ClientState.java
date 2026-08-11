@@ -62,6 +62,11 @@ public final class ClientState {
         blindMode = BlindMode.NORMAL;
         showHud = true;
         easyDarkness = 0.6D;
+        // Cel tez, inaczej ukonczone wyzwanie z poprzedniego serwera wylacza tam efekty
+        // (goalFinishedMs > 0 = effectsActive false) az do pierwszego pakietu GoalInfo.
+        goalId = null;
+        goalStartedAt = 0L;
+        goalFinishedMs = 0L;
         ROSTER.clear();
         SIGNALS.clear();
         ECHOES.clear();
