@@ -161,6 +161,7 @@ public final class BmdCommand {
     private static int mode(CommandContext<CommandSourceStack> ctx) {
         BlindMode m = BlindMode.byName(StringArgumentType.getString(ctx, "level"));
         BmdConfig.get().blindMode = m.name();
+        BmdConfig.save();
         MinecraftServer server = ctx.getSource().getServer();
         BmdSync.broadcast(server);
         // Opis klasy zalezy od trybu, wiec slepi dostaja swiezy briefing.

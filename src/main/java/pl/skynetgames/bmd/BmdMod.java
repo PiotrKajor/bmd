@@ -51,6 +51,9 @@ public class BmdMod implements ModInitializer {
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             BmdSync.broadcast(server);
+            // Bez tego wchodzacy nie wie nic o wyzwaniu: nie widzi licznika, a gdy cel
+            // juz padl, jego klient dalej uwaza efekty za wlaczone (slepy = czarny ekran).
+            BmdSync.broadcastGoal(server);
             if (BmdState.get(handler.getPlayer()) != Sense.NONE) {
                 BmdSync.briefing(handler.getPlayer());
             }
