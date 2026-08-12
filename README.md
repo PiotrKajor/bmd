@@ -1,7 +1,25 @@
-# Blind Mute Deaf
+<div align="center">
 
-Tryb zabawy do Minecrafta: każdy gracz traci jeden zmysł. Ślepy nie widzi, niemy nie mówi,
-głuchy nie słyszy. Żeby dogadać się mimo tego — koło gestów nad głową i tabliczki z przedmiotami.
+<sub><b>Polski</b> · <a href="README.en.md">English</a></sub>
+
+<sub><a href="CHANGELOG.md">Historia zmian</a></sub>
+
+# 👁🔇🔈 Blind Mute Deaf
+
+**Tryb zabawy do Minecrafta: każdy gracz traci jeden zmysł — i ma sobie z tym poradzić.**
+
+Ślepy nie widzi, niemy nie mówi, głuchy nie słyszy. Żeby dogadać się mimo tego —
+koło gestów nad głową i tabliczki z przedmiotami.
+
+[![Pobierz jar](https://img.shields.io/badge/Pobierz-bmd.jar-4fb4ff?style=for-the-badge)](../../releases/latest)
+&nbsp;
+![Minecraft](https://img.shields.io/badge/Minecraft%2026.2%20%7C%20Fabric-2a3245?style=for-the-badge)
+&nbsp;
+![Licencja](https://img.shields.io/badge/licencja-MIT-3ddc84?style=for-the-badge)
+
+</div>
+
+---
 
 **Fabric 26.2** (Java 25). Wymaga [Fabric API](https://modrinth.com/mod/fabric-api).
 Integracja z [Simple Voice Chat](https://modrinth.com/mod/simple-voice-chat) jest opcjonalna,
@@ -87,3 +105,7 @@ java src/main/java/dev/kajor/bmd/Geometry.java   # self-check matematyki
 ```
 
 Wymaga JDK 25 (MC 26.2). Ścieżka do niego siedzi w `gradle.properties` jako `org.gradle.java.home`.
+
+## Licencja
+
+MIT — patrz [LICENSE](LICENSE).

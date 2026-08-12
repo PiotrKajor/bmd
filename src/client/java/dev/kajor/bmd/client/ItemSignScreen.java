@@ -31,14 +31,14 @@ public class ItemSignScreen extends Screen {
     private final List<ItemStack> results = new ArrayList<>();
 
     public ItemSignScreen() {
-        super(Component.literal("Tabliczka z przedmiotem"));
+        super(Component.translatable("bmd.sign.title"));
     }
 
     @Override
     protected void init() {
         int boxW = COLUMNS * CELL;
         int left = (width - boxW) / 2;
-        search = new EditBox(font, left, height / 2 - 60, boxW, 18, Component.literal("Szukaj"));
+        search = new EditBox(font, left, height / 2 - 60, boxW, 18, Component.translatable("bmd.sign.search"));
         search.setMaxLength(48);
         search.setResponder(this::refresh);
         addRenderableWidget(search);

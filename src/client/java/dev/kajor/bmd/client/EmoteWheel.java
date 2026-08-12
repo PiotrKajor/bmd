@@ -25,7 +25,7 @@ public class EmoteWheel extends Screen {
     private boolean keyHeldSinceOpen = false;
 
     public EmoteWheel(KeyMapping heldKey) {
-        super(Component.literal("Kolo gestow"));
+        super(Component.translatable("bmd.wheel.title"));
         this.heldKey = heldKey;
     }
 

@@ -3,10 +3,15 @@
   "id": "bmd",
   "version": "${version}",
   "name": "Blind Mute Deaf",
-  "description": "Tryb zabawy: kazdy gracz traci jeden zmysl - wzrok, glos albo sluch. Komunikacja przez kolo gestow.",
+  "description": "A party game mode where every player loses one sense - sight, voice or hearing. They communicate through a gesture wheel and item signs.",
   "authors": [
     "Piotr Kajor"
   ],
+  "contact": {
+    "homepage": "https://github.com/PiotrKajor/bmd",
+    "sources": "https://github.com/PiotrKajor/bmd",
+    "issues": "https://github.com/PiotrKajor/bmd/issues"
+  },
   "license": "MIT",
   "environment": "*",
   "entrypoints": {
