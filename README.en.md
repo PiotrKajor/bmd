@@ -17,7 +17,7 @@ To work around it: a gesture wheel above the head and item signs.
 &nbsp;
 ![License](https://img.shields.io/badge/license-MIT-3ddc84?style=for-the-badge)
 
-<img src="docs/media/gest-nametag.png" alt="A gesture above a player's head — thumbs up and “Yes”" width="720">
+<img src="docs/media/banner.png" alt="Blind Mute Deaf — an echolocation wave reveals a figure in the dark" width="820">
 
 </div>
 

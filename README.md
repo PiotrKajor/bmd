@@ -17,7 +17,7 @@ koło gestów nad głową i tabliczki z przedmiotami.
 &nbsp;
 ![Licencja](https://img.shields.io/badge/licencja-MIT-3ddc84?style=for-the-badge)
 
-<img src="docs/media/gest-nametag.png" alt="Gest nad głową gracza — kciuk w górę i „Yes”" width="720">
+<img src="docs/media/banner.png" alt="Blind Mute Deaf — fala echolokacji wyłania postać z ciemności" width="820">
 
 </div>
 
