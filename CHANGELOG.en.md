@@ -11,7 +11,7 @@ versioning follows [SemVer](https://semver.org/).
 
 ## [1.11.3] — 2026-08-12
 
-First public release. Until now the mod only ran on the a private server servers.
+First public release. Earlier versions only ever ran on a private server.
 
 ### Fixed
 

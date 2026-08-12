@@ -11,7 +11,7 @@ wersjonowanie wg [SemVer](https://semver.org/lang/pl/).
 
 ## [1.11.3] — 2026-08-12
 
-Pierwsze wydanie publiczne. Mod działał wcześniej tylko na serwerach a private server.
+Pierwsze wydanie publiczne. Wcześniejsze wersje chodziły tylko na prywatnym serwerze.
 
 ### Naprawione
 
