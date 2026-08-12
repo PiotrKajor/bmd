@@ -17,6 +17,8 @@ To work around it: a gesture wheel above the head and item signs.
 &nbsp;
 ![License](https://img.shields.io/badge/license-MIT-3ddc84?style=for-the-badge)
 
+<img src="docs/media/gest-nametag.png" alt="A gesture above a player's head — thumbs up and “Yes”" width="720">
+
 </div>
 
 ---
@@ -28,6 +30,16 @@ Mute and Deaf lose half their point.
 The mod has to be installed **on the server and on every client** — blindness, the sound
 cut-off and the gesture wheel all live on the client side. With `requireClientMod` (on by
 default) players without it are kicked at login instead of silently playing an easier game.
+
+## What it looks like
+
+| | |
+|---|---|
+| <img src="docs/media/kolo-gestow.png" alt="Gesture wheel"> | <img src="docs/media/echolokacja.png" alt="Echolocation as the blind player sees it"> |
+| **The gesture wheel** — hold Left Ctrl, aim with the mouse, release. | **Through the blind player's eyes** — a sound fires a wave that lights up the shape of the surroundings. |
+| <img src="docs/media/gest-pomocy.png" alt="Calling for help"> | <img src="docs/media/gest-nametag.png" alt="A gesture on the nametag"> |
+| **Calling for help** — the mute player cannot say this out loud or in chat. | **Gestures sit on the nametag** — visible from any distance. |
+
 
 ## The classes
 

@@ -17,6 +17,8 @@ koło gestów nad głową i tabliczki z przedmiotami.
 &nbsp;
 ![Licencja](https://img.shields.io/badge/licencja-MIT-3ddc84?style=for-the-badge)
 
+<img src="docs/media/gest-nametag.png" alt="Gest nad głową gracza — kciuk w górę i „Yes”" width="720">
+
 </div>
 
 ---
@@ -26,6 +28,16 @@ Integracja z [Simple Voice Chat](https://modrinth.com/mod/simple-voice-chat) jes
 ale bez niej Mute i Deaf tracą połowę sensu.
 
 Mod musi być **i na serwerze, i u graczy** — ślepota, wyciszenie dźwięku i koło gestów są klienckie.
+
+## Jak to wygląda
+
+| | |
+|---|---|
+| <img src="docs/media/kolo-gestow.png" alt="Koło gestów"> | <img src="docs/media/echolokacja.png" alt="Echolokacja ślepego"> |
+| **Koło gestów** — przytrzymaj Lewy Ctrl, celuj myszą, puść. | **Oczami ślepego** — dźwięk wystrzeliwuje falę, która oświetla kształt otoczenia. |
+| <img src="docs/media/gest-pomocy.png" alt="Gest wołania o pomoc"> | <img src="docs/media/gest-nametag.png" alt="Gest na nametagu"> |
+| **Wołanie o pomoc** — niemy nie powie tego głosem ani na czacie. | **Gesty siedzą na nametagu** — widać je z dowolnej odległości. |
+
 
 ## Klasy
 
