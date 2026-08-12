@@ -33,8 +33,20 @@ ZRODLO = (255, 214, 150)     # jedyny cieply punkt na calej grafice - oko samo d
 ZIARNO = 11                  # wybrane z kilkunastu; reszta ukladala sie w rowniejsze, nudniejsze luki
 
 FRONTY = ((95, 255), (140, 220), (185, 175), (230, 125))   # (promien, jasnosc)
-# Blokowa postac: glowa, tulow, dwie rece. Wspolrzedne wzgledem srodka.
-CZESCI = ((-40, -118, 40, -40), (-30, -40, 30, 66), (-58, -36, -30, 40), (30, -36, 58, 40))
+# Postac w proporcjach modelu gracza z Minecrafta, liczonych w pikselach skina:
+# glowa 8x8, tulow 8x12, rece i nogi po 4x12 - czyli 16 szerokosci na 32 wysokosci.
+# Wczesniej glowa byla szersza od tulowia i brakowalo nog, przez co sylwetka czytala sie
+# jak krzyz, a nie jak gracz.
+U = 7.5                                                    # piksel skina w pikselach ikony
+CZESCI = tuple((x0 * U, y0 * U, x1 * U, y1 * U) for x0, y0, x1, y1 in (
+    (-4, -16.6, 4, -8.6),  # glowa - odsunieta od barkow o pol kratki, inaczej cala sylwetka
+                           # zlewa sie w pionek szachowy; ta szpara robi z niej gracza
+    (-4, -8, 4, 4),        # tulow
+    (-8, -8, -4, 4),       # lewa reka
+    (4, -8, 8, 4),         # prawa reka
+    (-4, 4, -0.4, 16),     # lewa noga (szczelina miedzy nogami czyta sie i w miniaturze)
+    (0.4, 4, 4, 16),       # prawa noga
+))
 
 
 def fala(rys, cx, cy, skala=1.0, ziarno=ZIARNO):
