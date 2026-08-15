@@ -9,6 +9,14 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 versioning follows [SemVer](https://semver.org/).
 
+## [1.11.4] — 2026-08-15
+
+### Changed
+
+- **The filename carries the loader and the game version:** `bmd-fabric-26.2-1.11.4.jar`
+  instead of `bmd-1.11.3.jar`. The mod is tied to one Minecraft release and the mod
+  version alone never said which — easy to drop the wrong jar into `mods/`.
+
 ## [1.11.3] — 2026-08-12
 
 First public release. Earlier versions only ever ran on a private server.

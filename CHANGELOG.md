@@ -9,6 +9,14 @@
 Format wg [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/),
 wersjonowanie wg [SemVer](https://semver.org/lang/pl/).
 
+## [1.11.4] — 2026-08-15
+
+### Zmienione
+
+- **Nazwa pliku niesie silnik i wersję gry:** `bmd-fabric-26.2-1.11.4.jar` zamiast
+  `bmd-1.11.3.jar`. Mod jest przywiązany do konkretnego wydania Minecrafta, a sama
+  wersja moda tego nie mówi — łatwo było wgrać jar nie na tę wersję.
+
 ## [1.11.3] — 2026-08-12
 
 Pierwsze wydanie publiczne. Wcześniejsze wersje chodziły tylko na prywatnym serwerze.
