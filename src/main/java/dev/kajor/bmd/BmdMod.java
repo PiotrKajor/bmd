@@ -50,10 +50,13 @@ public class BmdMod implements ModInitializer {
         BlindEffects.register();
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            BmdSync.broadcast(server);
+            // Wprost do wchodzacego, nie broadcast: w JOIN nie ma go jeszcze w getPlayers(),
+            // wiec broadcast go omijal - slepy po ponownym wejsciu widzial swiat, dopoki
+            // ktos nie wpisal /bmd. Pozostali nic nowego o nim nie musza wiedziec.
+            BmdSync.send(handler.getPlayer());
             // Bez tego wchodzacy nie wie nic o wyzwaniu: nie widzi licznika, a gdy cel
             // juz padl, jego klient dalej uwaza efekty za wlaczone (slepy = czarny ekran).
-            BmdSync.broadcastGoal(server);
+            BmdSync.sendGoal(handler.getPlayer());
             if (BmdState.get(handler.getPlayer()) != Sense.NONE) {
                 BmdSync.briefing(handler.getPlayer());
             }
@@ -91,7 +94,8 @@ public class BmdMod implements ModInitializer {
             if (item == Items.AIR) return;
             itemId = BuiltInRegistries.ITEM.getKey(item);
         } else {
-            if (emoteId >= Emote.values().length) return;
+            // Klient przy wylaczonym kole mowi to sam - tu dociera tylko obejscie.
+            if (!BmdConfig.get().gestureWheel || emoteId >= Emote.values().length) return;
             Emote emote = Emote.byId(emoteId);
             // Gest robi halas - slepy uslyszy, ze cos sie dzieje, ale nie dowie sie co.
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(),

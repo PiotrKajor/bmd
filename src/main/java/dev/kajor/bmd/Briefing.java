@@ -33,6 +33,7 @@ public final class Briefing {
             out.add(Component.empty());
         }
 
+        String hintKey = null;
         switch (sense) {
             case BLIND -> {
                 BlindMode mode = BlindMode.byName(c.blindMode);
@@ -55,7 +56,7 @@ public final class Briefing {
                 out.add(cannot("bmd.brief.blind.noworld"));
                 if (c.onlyBlindCanCraft) out.add(can("bmd.brief.blind.craft"));
                 if (c.blindSlowness) out.add(cannot("bmd.brief.blind.slow"));
-                out.add(hint("bmd.brief.blind.hint"));
+                hintKey = "bmd.brief.blind.hint";
             }
             case MUTE -> {
                 out.add(flavor(Component.translatable("bmd.brief.mute.flavor")));
@@ -66,9 +67,9 @@ public final class Briefing {
                 if (c.muteCannotOpenContainers) out.add(cannot("bmd.brief.mute.nocontainers"));
                 if (c.onlyBlindCanCraft) out.add(cannot("bmd.brief.mute.nocraft"));
                 out.add(can("bmd.brief.mute.sees"));
-                out.add(can("bmd.brief.mute.wheel"));
+                if (c.gestureWheel) out.add(can("bmd.brief.mute.wheel"));
                 if (c.muteItemSign) out.add(can("bmd.brief.mute.sign"));
-                out.add(hint("bmd.brief.mute.hint"));
+                if (c.gestureWheel) hintKey = "bmd.brief.mute.hint";
             }
             case DEAF -> {
                 out.add(flavor(Component.translatable("bmd.brief.deaf.flavor")));
@@ -83,14 +84,24 @@ public final class Briefing {
                 if (c.deafHidesNameTags) out.add(cannot("bmd.brief.deaf.nonames"));
                 if (c.deafAggroRangeDoubled) out.add(cannot("bmd.brief.deaf.aggro"));
                 out.add(can("bmd.brief.deaf.speaks"));
-                out.add(can("bmd.brief.deaf.wheel"));
-                out.add(hint("bmd.brief.deaf.hint"));
+                if (c.gestureWheel) out.add(can("bmd.brief.deaf.wheel"));
+                hintKey = "bmd.brief.deaf.hint";
             }
             case NONE -> {
                 out.add(flavor(Component.translatable("bmd.brief.none.flavor")));
-                out.add(hint("bmd.brief.none.hint"));
+                hintKey = "bmd.brief.none.hint";
             }
         }
+
+        // Reguly dla wszystkich z klasa. Niemy bez czatu ma juz swoja linijke wyzej.
+        if (sense != Sense.NONE) {
+            if (c.everyoneCannotChat && !(sense == Sense.MUTE && c.muteCannotChat)) {
+                out.add(cannot("bmd.brief.mute.nochat"));
+            }
+            if (c.everyoneCannotWriteSigns) out.add(cannot("bmd.brief.all.nosigns"));
+            if (c.everyoneCannotWriteBooks) out.add(cannot("bmd.brief.all.nobooks"));
+        }
+        if (hintKey != null) out.add(hint(hintKey));
 
         out.add(Component.literal("═══════════════════════════════").withStyle(ChatFormatting.DARK_GRAY));
         return out;

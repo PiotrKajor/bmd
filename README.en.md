@@ -101,6 +101,10 @@ Keys that work:
 | `muteItemSign` | `true` | the mute player can hold any item up above their head |
 | `deafCannotUseItems` | `true` | no right-click for the deaf player (eating still works) |
 | `onlyBlindCanCraft` | `true` | only the blind player may craft |
+| `gestureWheel` | `true` | the gesture wheel for everyone; `false` turns it off for all |
+| `everyoneCannotChat` | `false` | nobody with a class can chat, or use `/msg`, `/me`, `/say` |
+| `everyoneCannotWriteSigns` | `false` | nobody with a class can write on signs (placing a blank one still works) |
+| `everyoneCannotWriteBooks` | `false` | nobody with a class can write in a book and quill |
 | `requireClientMod` | `true` | kicks players without the mod on their client |
 | `blindMode` | `"NORMAL"` | `EASY` \| `NORMAL` \| `HARD` — same as `/bmd mode` |
 | `blindEchoRange` | `24.0` | echolocation range in blocks |

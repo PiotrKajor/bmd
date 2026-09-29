@@ -98,6 +98,10 @@ Działające klucze:
 | `muteItemSign` | `true` | niemy wystawia nad głowę dowolny przedmiot |
 | `deafCannotUseItems` | `true` | głuchy nie używa PPM (jedzenie zostaje) |
 | `onlyBlindCanCraft` | `true` | craftować może wyłącznie ślepy |
+| `gestureWheel` | `true` | koło gestów dla wszystkich; `false` wyłącza je każdemu |
+| `everyoneCannotChat` | `false` | nikt z klasą nie pisze na czacie ani przez `/msg`, `/me`, `/say` |
+| `everyoneCannotWriteSigns` | `false` | nikt z klasą nie pisze na tabliczkach (postawić pustą można) |
+| `everyoneCannotWriteBooks` | `false` | nikt z klasą nie pisze w książce z piórem |
 | `requireClientMod` | `true` | wyrzuca graczy bez moda po stronie klienta |
 | `blindMode` | `"NORMAL"` | `EASY` \| `NORMAL` \| `HARD` — to samo co `/bmd mode` |
 | `blindEchoRange` | `24.0` | zasięg echolokacji w blokach |

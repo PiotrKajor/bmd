@@ -41,6 +41,14 @@ public class BmdConfig {
 
     /** Czy niemy moze wystawic nad glowa dowolny przedmiot jako komunikat. */
     public boolean muteItemSign = true;
+    /** Kolo gestow - false wylacza je wszystkim. */
+    public boolean gestureWheel = true;
+
+    // --- WSZYSCY Z KLASA (bez klasy = none - nie gra, nie podlega) ---
+    // Czat, tabliczki i ksiazki omijaja gesty - kazde da sie zamknac wszystkim.
+    public boolean everyoneCannotChat = false;
+    public boolean everyoneCannotWriteSigns = false;
+    public boolean everyoneCannotWriteBooks = false;
 
     /** Craftowac moze tylko slepy - pozostali musza mu przynosic surowce. */
     public boolean onlyBlindCanCraft = true;

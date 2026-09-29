@@ -33,23 +33,11 @@ public final class Debuffs {
             return InteractionResult.PASS;
         });
 
-        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
-            if (BmdState.effectsActive() && BmdConfig.get().muteCannotChat && BmdState.get(sender) == Sense.MUTE) {
-                warn(sender, "bmd.warn.mute_no_chat");
-                return false;
-            }
-            return true;
-        });
+        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> !blockChat(sender));
 
         // /msg, /me, /say - inaczej mute obchodzi sie czatem w piec sekund
-        ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register((message, source, params) -> {
-            if (!BmdState.effectsActive() || !BmdConfig.get().muteCannotChat) return true;
-            if (source.getEntity() instanceof ServerPlayer p && BmdState.get(p) == Sense.MUTE) {
-                warn(p, "bmd.warn.mute_no_chat");
-                return false;
-            }
-            return true;
-        });
+        ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register((message, source, params) ->
+                !(source.getEntity() instanceof ServerPlayer p && blockChat(p)));
 
         UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
             if (BmdState.effectsActive() && BmdConfig.get().deafCannotUseItems && sense(player) == Sense.DEAF) {
@@ -70,6 +58,24 @@ public final class Debuffs {
         });
     }
 
+    /** Niemy nie pisze z definicji klasy, reszta dopiero przy everyoneCannotChat. */
+    private static boolean blockChat(ServerPlayer p) {
+        if (BmdState.effectsActive() && BmdConfig.get().muteCannotChat && BmdState.get(p) == Sense.MUTE) {
+            warn(p, "bmd.warn.mute_no_chat");
+            return true;
+        }
+        if (restricted(p, BmdConfig.get().everyoneCannotChat)) {
+            warn(p, "bmd.warn.no_chat");
+            return true;
+        }
+        return false;
+    }
+
+    /** Regula "dla wszystkich" - dotyczy kazdego z klasa, poki wyzwanie trwa. */
+    public static boolean restricted(ServerPlayer p, boolean rule) {
+        return rule && BmdState.effectsActive() && BmdState.get(p) != Sense.NONE;
+    }
+
     /** Cokolwiek da sie zjesc albo wypic - liczy sie komponent, nie lista przedmiotow. */
     private static boolean isFood(ItemStack stack) {
         return stack.get(DataComponents.FOOD) != null || stack.get(DataComponents.CONSUMABLE) != null;
@@ -80,7 +86,7 @@ public final class Debuffs {
     }
 
     /** Na pasek nad hotbarem - czat zostaje czysty. */
-    private static void warn(Entity entity, String key) {
+    public static void warn(Entity entity, String key) {
         if (entity instanceof ServerPlayer p) {
             p.sendSystemMessage(Component.literal("✕ ").append(Component.translatable(key))
                     .withStyle(ChatFormatting.RED), true);

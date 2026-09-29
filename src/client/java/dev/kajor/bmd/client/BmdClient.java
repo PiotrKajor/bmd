@@ -8,11 +8,14 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Items;
 import org.lwjgl.glfw.GLFW;
 import dev.kajor.bmd.BmdMod;
 import dev.kajor.bmd.Emote;
@@ -42,6 +45,9 @@ public class BmdClient implements ClientModInitializer {
                     ClientState.echoRange = payload.echoRange();
                     ClientState.showHud = payload.showHud();
                     ClientState.easyDarkness = payload.easyDarkness();
+                    ClientState.gestureWheel = payload.gestureWheel();
+                    ClientState.itemSign = payload.itemSign();
+                    ClientState.booksBlocked = payload.booksBlocked();
                 }));
 
         ClientPlayNetworking.registerGlobalReceiver(BmdPayloads.Signal.TYPE, (payload, context) ->
@@ -69,17 +75,37 @@ public class BmdClient implements ClientModInitializer {
                 Identifier.fromNamespaceAndPath(BmdMod.MOD_ID, "blind_over"), new BlindHud(true));
 
         ClientTickEvents.END_CLIENT_TICK.register(BmdClient::tick);
+
+        // Edytor ksiazki otwiera sam klient, zanim serwer cokolwiek powie - stad blokada
+        // tutaj. Serwer i tak odrzuci zapis (MixinBookEdit), to tylko oszczedza pisania do kosza.
+        UseItemCallback.EVENT.register((player, level, hand) -> {
+            if (level.isClientSide() && ClientState.booksBlocked && ClientState.mine != Sense.NONE
+                    && ClientState.effectsActive() && player.getItemInHand(hand).is(Items.WRITABLE_BOOK)) {
+                player.sendOverlayMessage(Component.literal("✕ ").append(Component.translatable("bmd.warn.no_books"))
+                        .withStyle(ChatFormatting.RED));
+                return InteractionResult.FAIL;
+            }
+            return InteractionResult.PASS;
+        });
     }
 
     private static void tick(Minecraft mc) {
         Echolocation.tick();
 
         if (wheelKey.consumeClick() && mc.gui.screen() == null && mc.player != null) {
-            mc.gui.setScreen(new EmoteWheel(wheelKey));
+            if (ClientState.gestureWheel) {
+                mc.gui.setScreen(new EmoteWheel(wheelKey));
+            } else {
+                mc.player.sendOverlayMessage(Component.translatable("bmd.wheel.disabled")
+                        .withStyle(ChatFormatting.GRAY));
+            }
         }
 
         if (itemSignKey.consumeClick() && mc.gui.screen() == null && mc.player != null) {
-            if (ClientState.mine == Sense.MUTE) {
+            if (!ClientState.itemSign) {
+                mc.player.sendOverlayMessage(Component.translatable("bmd.sign.disabled")
+                        .withStyle(ChatFormatting.GRAY));
+            } else if (ClientState.mine == Sense.MUTE) {
                 mc.gui.setScreen(new ItemSignScreen());
             } else {
                 mc.player.sendOverlayMessage(Component.translatable("bmd.sign.mute_only")

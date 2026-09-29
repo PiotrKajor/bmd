@@ -9,6 +9,34 @@
 Format wg [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/),
 wersjonowanie wg [SemVer](https://semver.org/lang/pl/).
 
+## [1.12.0] — 2026-09-29
+
+Pomysły i zgłoszenie błędu: **SlayerIbn** — dzięki!
+
+### Dodane
+
+- **`gestureWheel`** — koło gestów da się wyłączyć wszystkim. Tabliczkę z przedmiotem
+  wyłączało już `muteItemSign`; teraz oba klawisze mówią wprost, że funkcja jest
+  wyłączona na serwerze, zamiast otwierać ekran na próżno.
+- **`everyoneCannotChat`, `everyoneCannotWriteSigns`, `everyoneCannotWriteBooks`** —
+  zamykają obejścia gestów wszystkim graczom z klasą (gracz bez klasy nie podlega).
+  Na tabliczce da się dalej postawić pustą tabliczkę, edytor się nie otwiera.
+  Każda włączona reguła pojawia się w opisie klasy (`/bmd`).
+
+### Naprawione
+
+- **F1 zdejmował czerń ślepego.** Czerń jest częścią HUD-u, więc schowanie HUD-u
+  odsłaniało świat — w każdym trybie ślepoty. Ślepy nie może już schować HUD-u,
+  także gdy schował go, zanim dostał klasę.
+- **Gracz wchodzący na serwer nie dostawał swojej klasy.** Synchronizacja przy wejściu
+  szła do listy graczy, na której wchodzącego jeszcze nie ma — klasa i ustawienia
+  docierały do klienta dopiero przy najbliższym `/bmd set`/`random`/`mode`. Ślepy po
+  ponownym wejściu widział więc świat, a licznik wyzwania stał.
+
+### Uwaga
+
+- Zmienił się pakiet synchronizacji — **klient i serwer muszą mieć 1.12.0.**
+
 ## [1.11.4] — 2026-08-15
 
 ### Zmienione

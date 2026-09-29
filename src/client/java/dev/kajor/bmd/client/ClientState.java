@@ -19,6 +19,10 @@ public final class ClientState {
     public static boolean showHud = true;
     /** Dodatkowe przyciemnienie ekranu w trybie latwym (0.0-1.0). */
     public static double easyDarkness = 0.6D;
+    /** Przelaczniki z configu serwera - klient odmawia sam, zanim cokolwiek otworzy. */
+    public static boolean gestureWheel = true;
+    public static boolean itemSign = true;
+    public static boolean booksBlocked = false;
     public static final Map<UUID, Sense> ROSTER = new HashMap<>();
 
     /** Aktywne wyzwanie - null, gdy zadnego nie ma. */
@@ -62,6 +66,9 @@ public final class ClientState {
         blindMode = BlindMode.NORMAL;
         showHud = true;
         easyDarkness = 0.6D;
+        gestureWheel = true;
+        itemSign = true;
+        booksBlocked = false;
         // Cel tez, inaczej ukonczone wyzwanie z poprzedniego serwera wylacza tam efekty
         // (goalFinishedMs > 0 = effectsActive false) az do pierwszego pakietu GoalInfo.
         goalId = null;

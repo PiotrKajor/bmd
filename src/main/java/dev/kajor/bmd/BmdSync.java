@@ -17,20 +17,25 @@ public final class BmdSync {
     }
 
     public static void send(ServerPlayer player) {
+        BmdConfig c = BmdConfig.get();
         ServerPlayNetworking.send(player, new BmdPayloads.Roster(
-                BmdState.all(), BmdState.get(player), BlindMode.byName(BmdConfig.get().blindMode), BmdConfig.get().blindEchoRange,
-                BmdConfig.get().blindShowHud, BmdConfig.get().blindEasyDarkness));
+                BmdState.all(), BmdState.get(player), BlindMode.byName(c.blindMode), c.blindEchoRange,
+                c.blindShowHud, c.blindEasyDarkness,
+                c.gestureWheel, c.muteItemSign, c.everyoneCannotWriteBooks));
     }
 
     /** Stan wyzwania - wysylany przy kazdej zmianie, nie co tick. */
     public static void broadcastGoal(MinecraftServer server) {
-        BmdPayloads.GoalInfo info = new BmdPayloads.GoalInfo(
+        for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+            sendGoal(p);
+        }
+    }
+
+    public static void sendGoal(ServerPlayer player) {
+        ServerPlayNetworking.send(player, new BmdPayloads.GoalInfo(
                 GoalState.goal() == null ? null : GoalState.goal().id(),
                 GoalState.startedAt(),
-                GoalState.isFinished() ? GoalState.elapsedMs() : 0L);
-        for (ServerPlayer p : server.getPlayerList().getPlayers()) {
-            ServerPlayNetworking.send(p, info);
-        }
+                GoalState.isFinished() ? GoalState.elapsedMs() : 0L));
     }
 
     /** Wyswietla graczowi opis jego klasy. */

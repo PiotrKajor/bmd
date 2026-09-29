@@ -9,6 +9,34 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 versioning follows [SemVer](https://semver.org/).
 
+## [1.12.0] — 2026-09-29
+
+Ideas and bug report: **SlayerIbn** — thank you!
+
+### Added
+
+- **`gestureWheel`** — the gesture wheel can be turned off for everyone. The item sign could
+  already be turned off with `muteItemSign`; now both keys say plainly that the feature is
+  disabled on the server instead of opening a screen for nothing.
+- **`everyoneCannotChat`, `everyoneCannotWriteSigns`, `everyoneCannotWriteBooks`** — close
+  the ways around gestures for every player with a class (players without one are not
+  affected). Signs can still be placed, just blank — the editor never opens.
+  Every rule that is on shows up in the class description (`/bmd`).
+
+### Fixed
+
+- **F1 removed the blind player's black screen.** The black is part of the HUD, so hiding
+  the HUD revealed the world — in every blindness mode. The blind player can no longer hide
+  the HUD, including when it was hidden before they got the class.
+- **A player joining the server did not get their class.** The join-time sync went out to
+  the player list, which the joining player is not on yet — the class and settings only
+  reached the client on the next `/bmd set`/`random`/`mode`. A blind player who reconnected
+  could therefore see the world, and the challenge timer stood still.
+
+### Note
+
+- The sync packet changed — **client and server both need 1.12.0.**
+
 ## [1.11.4] — 2026-08-15
 
 ### Changed
