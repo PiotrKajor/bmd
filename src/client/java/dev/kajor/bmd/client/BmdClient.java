@@ -12,9 +12,11 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.lwjgl.glfw.GLFW;
 import dev.kajor.bmd.BmdMod;
@@ -129,7 +131,8 @@ public class BmdClient implements ClientModInitializer {
         ClientPlayNetworking.send(new BmdPayloads.SignalRequest(-1, itemId));
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
-            mc.player.sendOverlayMessage(Component.translatable("bmd.sign.showing", itemId.getPath())
+            mc.player.sendOverlayMessage(Component.translatable("bmd.sign.showing",
+                    new ItemStack(BuiltInRegistries.ITEM.getValue(itemId)).getHoverName())
                     .withStyle(ChatFormatting.YELLOW));
         }
     }

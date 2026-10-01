@@ -4,7 +4,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.ChatFormatting;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import dev.kajor.bmd.net.BmdPayloads;
 
@@ -69,12 +71,21 @@ public final class ModCheck {
         BmdMod.LOG.info("Wyrzucono {} - brak moda Blind Mute Deaf po stronie klienta",
                 player.getGameProfile().name());
         player.connection.disconnect(Component.empty()
-                .append(Component.translatable("bmd.kick.no_mod")
+                .append(text("bmd.kick.no_mod")
                         .withStyle(ChatFormatting.RED, ChatFormatting.BOLD))
                 .append(Component.literal("\n\n"))
-                .append(Component.translatable("bmd.kick.no_mod_why").withStyle(ChatFormatting.GRAY))
+                .append(text("bmd.kick.no_mod_why").withStyle(ChatFormatting.GRAY))
                 .append(Component.literal("\n\n"))
-                .append(Component.translatable("bmd.kick.no_mod_how").withStyle(ChatFormatting.WHITE)));
+                .append(text("bmd.kick.no_mod_how").withStyle(ChatFormatting.WHITE)));
+    }
+
+    /**
+     * Wyrzucany klient nie ma moda, wiec nie ma tez naszych plikow jezykowych - goly
+     * klucz pokazalby sie doslownie. Fallbackiem jest angielski tekst, ktory serwer
+     * zna, bo Fabric API laduje en_us modow takze na serwerze dedykowanym.
+     */
+    private static MutableComponent text(String key) {
+        return Component.translatableWithFallback(key, Language.getInstance().getOrDefault(key));
     }
 
     private ModCheck() {
