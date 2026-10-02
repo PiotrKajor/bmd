@@ -43,7 +43,7 @@
   "bmd.warn.no_books": "Pisanie w książkach jest wyłączone w tej grze.",
   "bmd.kick.no_mod": "Brakuje moda Blind Mute Deaf",
   "bmd.kick.no_mod_why": "Bez niego ślepy widzi, a głuchy słyszy grę.",
-  "bmd.kick.no_mod_how": "Wrzuć bmd.jar do folderu mods/.",
+  "bmd.kick.no_mod_how": "Pobierz go z modrinth.com/mod/blind-mute-deaf i wrzuć do folderu mods/.",
   "bmd.cmd.assigned": "Rozdano klasy: %s graczy.",
   "bmd.cmd.set": "Ustawiono %s dla %s gracz(y).",
   "bmd.cmd.reset": "Zmysły wróciły. Jesteś zwykłym graczem.",

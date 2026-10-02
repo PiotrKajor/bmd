@@ -9,6 +9,15 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 versioning follows [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- **The kick message is in the player's language.** A player without the mod has none
+  of our translations, so the server translates it itself — into the language set in the
+  player's game, or English when there is none.
+- The message points to Modrinth instead of a `bmd.jar` file that no longer exists.
+
 ## [1.12.1] — 2026-10-02
 
 Bug report: **SlayerIbn** — thank you!

@@ -43,7 +43,7 @@
   "bmd.warn.no_books": "Writing in books is disabled in this game.",
   "bmd.kick.no_mod": "Blind Mute Deaf mod is missing",
   "bmd.kick.no_mod_why": "Without it the blind can see and the deaf can hear.",
-  "bmd.kick.no_mod_how": "Put bmd.jar into your mods/ folder.",
+  "bmd.kick.no_mod_how": "Get it from modrinth.com/mod/blind-mute-deaf and put it into your mods/ folder.",
   "bmd.cmd.assigned": "Roles assigned to %s player(s).",
   "bmd.cmd.set": "Set %s for %s player(s).",
   "bmd.cmd.reset": "Your senses are back. You are an ordinary player.",

@@ -74,7 +74,8 @@ COMMON = {
     "bmd.kick.no_mod": ("Brakuje moda Blind Mute Deaf", "Blind Mute Deaf mod is missing"),
     "bmd.kick.no_mod_why": ("Bez niego ślepy widzi, a głuchy słyszy grę.",
                             "Without it the blind can see and the deaf can hear."),
-    "bmd.kick.no_mod_how": ("Wrzuć bmd.jar do folderu mods/.", "Put bmd.jar into your mods/ folder."),
+    "bmd.kick.no_mod_how": ("Pobierz go z modrinth.com/mod/blind-mute-deaf i wrzuć do folderu mods/.",
+                            "Get it from modrinth.com/mod/blind-mute-deaf and put it into your mods/ folder."),
 
     "bmd.cmd.assigned": ("Rozdano klasy: %s graczy.", "Roles assigned to %s player(s)."),
     "bmd.cmd.set": ("Ustawiono %s dla %s gracz(y).", "Set %s for %s player(s)."),

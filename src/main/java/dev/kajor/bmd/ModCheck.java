@@ -10,7 +10,16 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import dev.kajor.bmd.net.BmdPayloads;
 
+import com.google.gson.JsonParser;
+import net.fabricmc.loader.api.FabricLoader;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
@@ -70,22 +79,49 @@ public final class ModCheck {
     private static void kick(ServerPlayer player) {
         BmdMod.LOG.info("Wyrzucono {} - brak moda Blind Mute Deaf po stronie klienta",
                 player.getGameProfile().name());
+        Map<String, String> lang = lang(player.clientInformation().language());
         player.connection.disconnect(Component.empty()
-                .append(text("bmd.kick.no_mod")
+                .append(text(lang, "bmd.kick.no_mod")
                         .withStyle(ChatFormatting.RED, ChatFormatting.BOLD))
                 .append(Component.literal("\n\n"))
-                .append(text("bmd.kick.no_mod_why").withStyle(ChatFormatting.GRAY))
+                .append(text(lang, "bmd.kick.no_mod_why").withStyle(ChatFormatting.GRAY))
                 .append(Component.literal("\n\n"))
-                .append(text("bmd.kick.no_mod_how").withStyle(ChatFormatting.WHITE)));
+                .append(text(lang, "bmd.kick.no_mod_how").withStyle(ChatFormatting.WHITE)));
     }
 
     /**
      * Wyrzucany klient nie ma moda, wiec nie ma tez naszych plikow jezykowych - goly
-     * klucz pokazalby sie doslownie. Fallbackiem jest angielski tekst, ktory serwer
-     * zna, bo Fabric API laduje en_us modow takze na serwerze dedykowanym.
+     * klucz pokazalby sie doslownie. Serwer tlumaczy wiec sam: plik jezyka gracza
+     * (zna go z ustawien klienta) prosto z naszego jara, a gdy go nie ma - angielski,
+     * ktory Fabric API laduje do Language takze na serwerze dedykowanym.
      */
-    private static MutableComponent text(String key) {
-        return Component.translatableWithFallback(key, Language.getInstance().getOrDefault(key));
+    private static MutableComponent text(Map<String, String> lang, String key) {
+        String s = lang.get(key);
+        return Component.literal(s != null ? s : Language.getInstance().getOrDefault(key));
+    }
+
+    private static final Map<String, Map<String, String>> langs = new HashMap<>();
+
+    private static Map<String, String> lang(String code) {
+        return langs.computeIfAbsent(code.toLowerCase(Locale.ROOT), c -> {
+            if (!c.matches("[a-z0-9_]+")) return Map.of();
+            return FabricLoader.getInstance().getModContainer(BmdMod.MOD_ID)
+                    .flatMap(mod -> mod.findPath("assets/bmd/lang/" + c + ".json"))
+                    .map(ModCheck::readLang)
+                    .orElse(Map.of());
+        });
+    }
+
+    private static Map<String, String> readLang(Path path) {
+        try (Reader r = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            Map<String, String> out = new HashMap<>();
+            JsonParser.parseReader(r).getAsJsonObject()
+                    .entrySet().forEach(e -> out.put(e.getKey(), e.getValue().getAsString()));
+            return out;
+        } catch (IOException | RuntimeException e) {
+            BmdMod.LOG.warn("Nie wczytano {}: {}", path, e.toString());
+            return Map.of();
+        }
     }
 
     private ModCheck() {

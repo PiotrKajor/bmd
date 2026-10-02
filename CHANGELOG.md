@@ -9,6 +9,14 @@
 Format wg [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/),
 wersjonowanie wg [SemVer](https://semver.org/lang/pl/).
 
+## [Unreleased]
+
+### Zmienione
+
+- **Komunikat wyrzucenia w języku gracza.** Gracz bez moda nie ma naszych tłumaczeń,
+  więc serwer tłumaczy sam — na język ustawiony w grze gracza; gdy go nie ma, po angielsku.
+- Komunikat wskazuje Modrinth zamiast nieistniejącego już pliku `bmd.jar`.
+
 ## [1.12.1] — 2026-10-02
 
 Zgłoszenie błędu: **SlayerIbn** — dzięki!
