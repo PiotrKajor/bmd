@@ -9,6 +9,18 @@
 Format wg [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/),
 wersjonowanie wg [SemVer](https://semver.org/lang/pl/).
 
+## [1.12.1] — 2026-10-02
+
+Zgłoszenie błędu: **SlayerIbn** — dzięki!
+
+### Naprawione
+
+- **Gracz bez moda widział gołe klucze na ekranie wyrzucenia** (`bmd.kick.no_mod`…)
+  zamiast instrukcji — jego klient nie ma plików językowych BMD. Teraz komunikat
+  przychodzi z angielskim tekstem zapasowym, który zna serwer.
+- **Tabliczka z przedmiotem podawała identyfikator** (`diamond_sword`) zamiast nazwy
+  przedmiotu w języku gracza.
+
 ## [1.12.0] — 2026-09-29
 
 Pomysły i zgłoszenie błędu: **SlayerIbn** — dzięki!

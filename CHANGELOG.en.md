@@ -9,6 +9,18 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 versioning follows [SemVer](https://semver.org/).
 
+## [1.12.1] — 2026-10-02
+
+Bug report: **SlayerIbn** — thank you!
+
+### Fixed
+
+- **Players without the mod saw raw keys on the kick screen** (`bmd.kick.no_mod`…)
+  instead of instructions — their client has no BMD language files. The message now
+  carries an English fallback text that the server knows.
+- **The item sign showed the item ID** (`diamond_sword`) instead of the item name in
+  the player's language.
+
 ## [1.12.0] — 2026-09-29
 
 Ideas and bug report: **SlayerIbn** — thank you!
